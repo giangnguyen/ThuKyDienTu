@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="system">Hệ Thống</string>
+    <string name="e_secrectary">Thư Ký Điện Tử</string>
+    <string name="loading">Đang tải\u2026</string>
+    <!-- Đăng nhập -->
+    <string name="hello">Hello World, MainActivity!</string>
+    <string name="app_name">ThuKyDienTu</string>
+    <string name="username">Tên Đăng Nhập</string>
+    <string name="password">Mật Khẩu</string>
+    <string name="logon">Đăng Nhập</string>
+
+    <!-- Đăng ký -->
+    <string name="register_account"><u>Đăng ký tài khoản</u></string>
+    <string name="register">Đăng ký</string>
+    <string name="fullname">Tên Đầy Đủ</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="address">Địa chỉ</string>
+    <string name="dayofbirth">Ngày sinh</string>
+    <string name="gender">Giới tính</string>
+    <string name="workplace">Cơ quan</string>
+    <string name="job">Nghề nhiệp</string>
+    <string name="male">Nam</string>
+    <string name="female">Nữ</string>
+    <string name="add">Thêm</string>
+    <string name="save">Lưu</string>
+    <string name="schedule">Thời Khóa Biểu</string>
+    <string name="sync">Đồng Bộ</string>
+    <string name="view">Xem</string>
+    <string name="hint">Gợi Ý</string>
+    <string name="docName">Tên Tài Liệu</string>
+    <string name="search">Tra Cứu</string>
+    <string name="dayofweek">Thứ</string>
+    <string name="monday">Thứ Hai</string>
+    <string name="tuesday">Thứ Ba</string>
+    <string name="wednesday">Thứ Tư</string>
+    <string name="thursday">Thứ Năm</string>
+    <string name="friday">Thứ Sáu</string>
+    <string name="saturday">Thứ Bảy</string>
+    <string name="sunday">Chủ Nhật</string>
+    <string name="start_time">00:00:00</string>
+    <string name="time">Thời Gian</string>
+    <string name="hour">Giờ</string>
+    <string name="minute">Phút</string>
+    <string name="schoolName">Tên Trường</string>
+    <string name="className">Tên Lớp</string>
+    <string name="subject">Môn Học</string>
+    <string name="task">Nhiệm Vụ</string>
+    <string name="date">Ngày (DD/MM/YY)</string>
+    <string name="day">Ngày</string>
+    <string name="month">Tháng</string>
+    <string name="year">Năm</string>
+    <string name="schedule_warning">Thời khóa biểu hiện chưa được lập</string>
+
+    <!-- Todo List -->
+    <string name="todo">Thời Gian Biểu</string>
+    <string name="todo_list_warning">Chưa có sự kiện nào được lập</string>
+    <string name="event">Sự kiện</string>
+    <string name="start">Bắt đầu</string>
+    <string name="end">Kết thúc</string>
+    <string name="description">Mô tả</string>
+    <string name="alarm">Chuông báo thức</string>
+    <string name="todo_title">Thêm Sự Kiện</string>
+    <string name="detail">Chi tiết</string>
+
+    <!-- Schedule Detail -->
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="lessons">Số Tiết</string>
+    <string name="lesson_duration">Thời Gian/Tiết (Phút)</string>
+    <string name="from"><i>Từ: </i></string>
+    <string name="to"><i>Đến: </i></string>
+
+    <string-array name="lessons">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    
+    <string-array name="lesson_duration">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>75</item>
+        <item>90</item>
+        <item>100</item>
+        <item>120</item>
+    </string-array>
+    
+    <!-- sync -->
+    <string name="success">Thành Công!</string>
+    <string name="fail">Thất Bại!</string>
+
+    <!-- file -->
+    <string name="file_manager">Quản Lý Tài Liệu</string>
+    <string name="upload">Tải Lên</string>
+    <string name="uploading">Đang tải\u2026</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="online">Trực Tuyến</string>
+    <string name="offline">Thẻ Nhớ</string>
+
+    <!-- Danh sach cac ngay trong tuan -->
+    <string-array name="dayofweeks_array">
+        <item name="sunday">Chủ Nhật</item>
+        <item name="monday">Thứ Hai</item>
+        <item name="tuesday">Thứ Ba</item>
+        <item name="wednesday">Thứ Tư</item>
+        <item name="thursday">Thứ Năm</item>
+        <item name="friday">Thứ Sáu</item>
+        <item name="saturday">Thứ Bảy</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:id="@+id/root"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/sunday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/monday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tuesday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wednesday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/thursday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/friday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/saturday"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <include layout="@layout/schedule_list_item" />
+    </LinearLayout>
+
+</LinearLayout>
