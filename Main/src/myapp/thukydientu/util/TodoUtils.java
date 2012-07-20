@@ -316,7 +316,7 @@ public class TodoUtils {
 				TKDTProvider.TODO_CONTENT_URI, 
 				TodoTable.PROJECTION, 
 				TodoTable.DATE_START + "=?", 
-				new String[]{String.valueOf(cal.get(Calendar.DAY_OF_MONTH))}, 
+				new String[]{TimeUtils.getDate(cal.getTimeInMillis())}, 
 				null
 				);
 		activity.startManagingCursor(cursor);
