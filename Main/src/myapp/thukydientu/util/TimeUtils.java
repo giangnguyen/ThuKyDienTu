@@ -1,5 +1,6 @@
 package myapp.thukydientu.util;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,6 +85,10 @@ public class TimeUtils {
 		final int second = getSecond(timeDB);
 		return toDisplayString(hour, minute, second);
 	}
+	public static long getTimeInMilisecond(String timeString) {
+		return new Time(getHour(timeString), getMinute(timeString), getSecond(timeString)).getTime();
+	}
+	
 	public static String getTime(long timeInMilisecond) {
 		SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
 		final String time = sdf.format(new Date(timeInMilisecond));

@@ -1,8 +1,14 @@
 package myapp.thukydientu.view;
 
+import java.util.Calendar;
+import java.util.List;
+
 import myapp.thukydientu.R;
+import myapp.thukydientu.controller.HintTimeManager;
 import myapp.thukydientu.model.IConstants;
+import myapp.thukydientu.model.TimeDuration;
 import myapp.thukydientu.util.FileUtils;
+import myapp.thukydientu.util.TimeUtils;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -14,6 +20,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -82,6 +89,25 @@ public class MainActivity extends TabActivity {
             }
         };
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
+    
+        ImageButton share = (ImageButton) findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.HOUR_OF_DAY, 8);
+				long startTime = cal.getTimeInMillis();
+				cal.set(Calendar.HOUR_OF_DAY, 17);
+				long endTime = cal.getTimeInMillis();
+				
+				HintTimeManager hintTimeManager = new HintTimeManager(startTime, endTime, 15, 30, 45*60*1000);
+				List<TimeDuration> listHint = hintTimeManager.getHintTimeByDay(MainActivity.this, 20);
+				for (TimeDuration timeDuration : listHint) {
+					Log.d("MainActivity + time", "startTime: " + TimeUtils.getTimeLable(MainActivity.this, timeDuration.getStartTime()) + " endTime: " + TimeUtils.getTimeLable(MainActivity.this, timeDuration.getEndTime()));
+				}
+			}
+		});
     }
     
     public void createTabLayout()

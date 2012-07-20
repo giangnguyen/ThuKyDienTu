@@ -1,6 +1,7 @@
 package myapp.thukydientu.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -259,24 +260,26 @@ public class TodoUtils {
 		return activity.getContentResolver().delete(uriId, null, null);
 	}
 	
+	private static void bindTodoData(Todo todo, Cursor cursor) {
+		todo.setId(cursor.getLong(TodoTable.ID_COLUMN_INDEX));
+		todo.setDateStart(cursor.getString(TodoTable.DATE_START_COLUMN_INDEX));
+		todo.setDateEnd(cursor.getString(TodoTable.DATE_END_COLUMN_INDEX));
+		todo.setTimeFrom(cursor.getString(TodoTable.TIME_FROM_COLUMN_INDEX));
+		todo.setTimeUntil(cursor.getString(TodoTable.TIME_UNTIL_COLUMN_INDEX));
+		todo.setTitle(cursor.getString(TodoTable.TITLE_COLUMN_INDEX));
+		todo.setWork(cursor.getString(TodoTable.WORK_COLUMN_INDEX));
+		todo.setAlarm(cursor.getInt(TodoTable.ALAMR_COLUMN_INDEX));
+		todo.setDateSet(cursor.getString(TodoTable.DATE_SET_COLUMN_INDEX));
+		todo.setModified(cursor.getString(TodoTable.MODIFIED_COLUMN_INDEX));
+		todo.setChanged(cursor.getInt(TodoTable.CHANGED_COLUMN_INDEX));
+		todo.setDeleted(cursor.getInt(TodoTable.DELETED_COLUMN_INDEX));
+	}
 	public static Todo getTodo(Activity activity, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, Id);
 		final Cursor cursor = activity.getContentResolver().query(uriId, TodoTable.PROJECTION, null, null, null);
 		if (cursor.moveToFirst()) {
 			Todo todo = new Todo();
-			todo.setId(cursor.getLong(TodoTable.ID_COLUMN_INDEX));
-			todo.setDateStart(cursor.getString(TodoTable.DATE_START_COLUMN_INDEX));
-			todo.setDateEnd(cursor.getString(TodoTable.DATE_END_COLUMN_INDEX));
-			todo.setTimeFrom(cursor.getString(TodoTable.TIME_FROM_COLUMN_INDEX));
-			todo.setTimeUntil(cursor.getString(TodoTable.TIME_UNTIL_COLUMN_INDEX));
-			todo.setTitle(cursor.getString(TodoTable.TITLE_COLUMN_INDEX));
-			todo.setWork(cursor.getString(TodoTable.WORK_COLUMN_INDEX));
-			todo.setAlarm(cursor.getInt(TodoTable.ALAMR_COLUMN_INDEX));
-			todo.setDateSet(cursor.getString(TodoTable.DATE_SET_COLUMN_INDEX));
-			todo.setModified(cursor.getString(TodoTable.MODIFIED_COLUMN_INDEX));
-			todo.setChanged(cursor.getInt(TodoTable.CHANGED_COLUMN_INDEX));
-			todo.setDeleted(cursor.getInt(TodoTable.DELETED_COLUMN_INDEX));
-			
+			bindTodoData(todo, cursor);
 			closeCursor(cursor);
 			return todo;
 		}
@@ -284,7 +287,7 @@ public class TodoUtils {
 		return null;
 	}
 	
-	public static List<Todo> getListScheduleChanged(Activity activity) {
+	public static List<Todo> getListTodoChanged(Activity activity) {
 		List<Todo> listChanged = new ArrayList<Todo>();
 		final Cursor cursor = activity.getContentResolver().query(
 				TKDTProvider.TODO_CONTENT_URI, 
@@ -296,7 +299,32 @@ public class TodoUtils {
 		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			do {
-				listChanged.add(getTodo(activity, cursor.getLong(TodoTable.ID_COLUMN_INDEX)));
+				Todo todo = new Todo();
+				bindTodoData(todo, cursor);
+				listChanged.add(todo);
+			} while (cursor.moveToNext());
+		}
+		closeCursor(cursor);
+		return listChanged;
+	}
+	
+	public static List<Todo> getListTodoByDay(Activity activity, int dayOfMonth) {
+		List<Todo> listChanged = new ArrayList<Todo>();
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		final Cursor cursor = activity.getContentResolver().query(
+				TKDTProvider.TODO_CONTENT_URI, 
+				TodoTable.PROJECTION, 
+				TodoTable.DATE_START + "=?", 
+				new String[]{String.valueOf(cal.get(Calendar.DAY_OF_MONTH))}, 
+				null
+				);
+		activity.startManagingCursor(cursor);
+		if (cursor.moveToFirst()) {
+			do {
+				Todo todo = new Todo();
+				bindTodoData(todo, cursor);
+				listChanged.add(todo);
 			} while (cursor.moveToNext());
 		}
 		closeCursor(cursor);
@@ -315,7 +343,7 @@ public class TodoUtils {
 		}
 		
 		// sync to server
-		List<Todo> listChanged = getListScheduleChanged(activity);
+		List<Todo> listChanged = getListTodoChanged(activity);
 		for (Todo todo : listChanged) {
 			final String sync_app = WebservicesUtils.sync_todo_app(userId, todo);
 			Log.d("sync", "sync_app result: " + sync_app);

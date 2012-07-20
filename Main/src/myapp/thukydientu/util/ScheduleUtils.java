@@ -1,6 +1,7 @@
 package myapp.thukydientu.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import myapp.thukydientu.database.ScheduleTable;
@@ -158,22 +159,28 @@ public class ScheduleUtils {
 		return dateSet;
 	}
 	
+	public static void bindScheduleData(Schedule schedule, Cursor cursor) {
+		schedule.setId(cursor.getLong(ScheduleTable.ID_COLUMN_INDEX));
+		schedule.setDayName(cursor.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX));
+		schedule.setTime(cursor.getString(ScheduleTable.TIME_COLUMN_INDEX));
+		schedule.setSubject(cursor.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
+		schedule.setClassName(cursor.getString(ScheduleTable.CLASS_COLUMN_INDEX));
+		schedule.setSchoolName(cursor.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
+		schedule.setDateSet(cursor.getString(ScheduleTable.DATE_SET_COLUMN_INDEX));
+		schedule.setModified(cursor.getString(ScheduleTable.MODIFIED_COLUMN_INDEX));
+		schedule.setChanged(cursor.getInt(ScheduleTable.CHANGE_COLUMN_INDEX));
+		schedule.setDeleted(cursor.getInt(ScheduleTable.DELETED_COLUMN_INDEX));
+		schedule.setLessons(cursor.getInt(ScheduleTable.LESSON_COLUMN_INDEX));
+		schedule.setLessonDuration(cursor.getInt(ScheduleTable.LESSON_DURATION_COLUMN_INDEX));
+	}
+	
 	public static Schedule getSchedule(Activity activity, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
 		final Cursor cursor = activity.managedQuery(uriId, ScheduleTable.PROJECTION, null, null, null);
 		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			Schedule schedule = new Schedule();
-			schedule.setId(cursor.getLong(ScheduleTable.ID_COLUMN_INDEX));
-			schedule.setDayName(cursor.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX));
-			schedule.setTime(cursor.getString(ScheduleTable.TIME_COLUMN_INDEX));
-			schedule.setSubject(cursor.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
-			schedule.setClassName(cursor.getString(ScheduleTable.CLASS_COLUMN_INDEX));
-			schedule.setSchoolName(cursor.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
-			schedule.setDateSet(cursor.getString(ScheduleTable.DATE_SET_COLUMN_INDEX));
-			schedule.setModified(cursor.getString(ScheduleTable.MODIFIED_COLUMN_INDEX));
-			schedule.setChanged(cursor.getInt(ScheduleTable.CHANGE_COLUMN_INDEX));
-			schedule.setDeleted(cursor.getInt(ScheduleTable.DELETED_COLUMN_INDEX));
+			bindScheduleData(schedule, cursor);
 			closeCursor(cursor);
 			return schedule;
 		}
@@ -193,11 +200,34 @@ public class ScheduleUtils {
 		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			do {
-				listChanged.add(getSchedule(activity, cursor.getLong(ScheduleTable.ID_COLUMN_INDEX)));
+				Schedule schedule = new Schedule();
+				bindScheduleData(schedule, cursor);
+				listChanged.add(schedule);
 			} while (cursor.moveToNext());
 		}
 		closeCursor(cursor);
 		return listChanged;
+	}
+	
+	public static List<Schedule> getListScheduleByDay(Activity activity, int dayOfMonth) {
+		List<Schedule> listSchedule = new ArrayList<Schedule>();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		final Cursor cursor = activity.getContentResolver().query(
+				TKDTProvider.SCHEDULE_CONTENT_URI, 
+				ScheduleTable.PROJECTION, 
+				ScheduleTable.DATE_NAME + "=?", 
+				new String[]{String.valueOf(calendar.get(Calendar.DAY_OF_WEEK))}, 
+				null);
+		if (cursor.moveToFirst()) {
+			do {
+				Schedule schedule = new Schedule();
+				bindScheduleData(schedule, cursor);
+				listSchedule.add(schedule);
+			} while (cursor.moveToNext());
+		}
+		closeCursor(cursor);
+		return listSchedule;
 	}
 	
 	public static void closeCursor(Cursor cursor) {

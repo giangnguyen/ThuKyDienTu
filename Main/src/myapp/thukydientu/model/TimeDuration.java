@@ -1,27 +1,62 @@
 package myapp.thukydientu.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TimeDuration {
-	private long Start;
-	private long End;
-	public long getStart() {
-		return Start;
+	private long StartTime;
+	private long EndTime;
+	
+	public TimeDuration(long startTime, long endTime) {
+		this.StartTime = startTime;
+		this.EndTime = endTime;
 	}
-	public void setStart(long start) {
-		Start = start;
+	
+	public long getStartTime() {
+		return StartTime;
 	}
-	public long getEnd() {
-		return End;
+	
+	public void setStartTime(long startTime) {
+		this.StartTime = startTime;
 	}
-	public void setEnd(long end) {
-		End = end;
+	
+	public long getEndTime() {
+		return EndTime;
 	}
+	
+	public void setEndTime(long endTime) {
+		this.EndTime = endTime;
+	}
+	
+	public long getDuration() {
+		return this.EndTime - this.StartTime;
+	}
+	
 	public boolean isContained(TimeDuration timeDurationObject) {
-		if (timeDurationObject.getStart() > Start && timeDurationObject.getStart() < End)
+		if (timeDurationObject.getStartTime() > StartTime && timeDurationObject.getStartTime() < EndTime)
 			return true;
 		
-		if (timeDurationObject.getEnd() > Start && timeDurationObject.getEnd() < End)
+		if (timeDurationObject.getEndTime() > StartTime && timeDurationObject.getEndTime() < EndTime)
 			return true;
 		
 		return false;
+	}
+
+	public List<TimeDuration> subtract(TimeDuration subtractObject) {
+		List<TimeDuration> result = new ArrayList<TimeDuration>();
+		
+		if (subtractObject.getDuration() < this.getDuration()) {
+			
+			if (subtractObject.getStartTime() <= this.StartTime) 
+				result.add(new TimeDuration(subtractObject.getEndTime(), this.EndTime));
+			else {
+				result.add(new TimeDuration(this.StartTime, subtractObject.getStartTime()));
+				if (subtractObject.getEndTime() < this.EndTime) 
+					result.add(new TimeDuration(subtractObject.EndTime, this.EndTime));
+			}
+			
+		}
+		
+		return result;
 	}
 }
