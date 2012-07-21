@@ -30,6 +30,7 @@
     <string name="sync">Đồng Bộ</string>
     <string name="view">Xem</string>
     <string name="hint">Gợi Ý</string>
+    <string name="share">Chia Sẽ</string>
     <string name="docName">Tên Tài Liệu</string>
     <string name="search">Tra Cứu</string>
     <string name="dayofweek">Thứ</string>
@@ -72,6 +73,9 @@
     <string name="lesson_duration">Thời Gian/Tiết (Phút)</string>
     <string name="from"><i>Từ: </i></string>
     <string name="to"><i>Đến: </i></string>
+    
+    <!-- Home -->
+    <string name="home">Home</string>
 
     <string-array name="lessons">
         <item>1</item>

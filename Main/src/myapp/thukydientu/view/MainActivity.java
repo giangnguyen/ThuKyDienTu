@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 public class MainActivity extends TabActivity {
 	
+	public static final String TAB_HOME = "TAB_HOME";
     public static final String TAB_SCHEDULE_ID = "TAB_SCHEDULE";
     public static final String TAB_TODO_ID = "TAB_TODO";
     public static final String TAB_FILE_MANAGER_ID = "TAB_FILE_MANAGER";
@@ -118,6 +119,14 @@ public class MainActivity extends TabActivity {
 
 	    // Create an Intent to launch an Activity for the tab (to be reused)
 
+	    View home = getLayoutInflater().inflate(R.layout.tab_home, null);
+	    
+	    // Do the same for the other tabs
+	    intent = new Intent().setClass(this, HomeActivity.class);
+	    spec = tabHost.newTabSpec(TAB_SCHEDULE_ID).setIndicator(home)
+	                  .setContent(intent);
+	    tabHost.addTab(spec);
+	    
 	    View schedule = getLayoutInflater().inflate(R.layout.tab_schedule, null);
 	    scheduleSync = (ImageView) schedule.findViewById(R.id.sync);
 	    
