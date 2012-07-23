@@ -1,0 +1,17 @@
+# Binary files
+bin
+gen
+libs
+obj
+
+# These needs to be included
+!/libsoftphone/libs/*/*.so
+
+# Eclipse + KDevelop
+/.metadata
+*.kdev4
+.kdev_include_paths
+
+# Packaging
+/.build
+/softphone-*.zip
