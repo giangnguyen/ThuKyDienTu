@@ -74,6 +74,11 @@
     <string name="from"><i>Từ: </i></string>
     <string name="to"><i>Đến: </i></string>
     
+    <!-- Inform -->
+    <string name="title">Tiêu Đề</string>
+    <string name="content">Nội Dung</string>
+    <string name="submit">Gửi</string>
+    
     <!-- Home -->
     <string name="home">Home</string>
 
