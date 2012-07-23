@@ -31,7 +31,9 @@
     <string name="view">Xem</string>
     <string name="hint">Gợi Ý</string>
     <string name="share">Chia Sẽ</string>
+    <string name="scan_qr">Quét Mã QR</string>
     <string name="docName">Tên Tài Liệu</string>
+    <string name="inform">Thông Báo</string>
     <string name="search">Tra Cứu</string>
     <string name="dayofweek">Thứ</string>
     <string name="monday">Thứ Hai</string>
