@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CursorTreeAdapter;
@@ -139,5 +140,15 @@ public class ScheduleListActivity extends ExpandableListActivity {
 		// to be closed.
 		mAdapter.changeCursor(null);
 		mAdapter = null;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+	    if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+	    	startActivity(new Intent(this, MainActivity.class));
+	    	finish();
+	        return true;
+	    }
+	    return false;
 	}
 }

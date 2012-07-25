@@ -11,12 +11,12 @@ import java.util.List;
 import myapp.thukydientu.R;
 import myapp.thukydientu.adapter.FileAdapter;
 import myapp.thukydientu.controller.Connection;
+import myapp.thukydientu.model.BackToMainActivity;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.MyFile;
 import myapp.thukydientu.util.FileUtils;
 import myapp.thukydientu.util.WebservicesUtils;
 import myapp.thukydientu.util.XMLUtils;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -38,7 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FileManagerActivity extends Activity {
+public class FileManagerActivity extends BackToMainActivity {
 
 	private ProgressDialog mLoading;
 	
@@ -318,10 +318,10 @@ public class FileManagerActivity extends Activity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (State == MAIN) 
-				showDialog(DIALOG_EXIT_CONFIRM);
-			else {
+		if (State == MAIN)
+			return super.onKeyDown(keyCode, event);
+		else {
+			if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 				if (path.getPath().equals(ROOT)) {
 					switchState(MAIN);
 				} else {
@@ -330,9 +330,10 @@ public class FileManagerActivity extends Activity {
 					path = new File(curentPath.substring(0, index));
 					exploreDirectory(Target, "");
 				}
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public void exploreDirectory(String location, String directory) {

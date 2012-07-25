@@ -110,10 +110,10 @@ public class MainActivity extends TabActivity {
 			}
 		});
     }
-    
+   
     public void createTabLayout()
     {
-	    final TabHost tabHost = getTabHost();  // The activity TabHost
+		TabHost tabHost = getTabHost();
 	    TabHost.TabSpec spec;  // Resusable TabSpec for each tab
 	    Intent intent;  // Reusable Intent for each tab
 
@@ -170,4 +170,5 @@ public class MainActivity extends TabActivity {
 	        }
 	    });
     }
+    
 }
