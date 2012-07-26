@@ -421,4 +421,14 @@ public class XMLUtils {
 				results[1] = Integer.parseInt(scheduleId.getFirstChild().getNodeValue());
 		return results;
 	}
+	
+	public static int addNoticeResult(String xml) {
+		Document dom = parseXml2Document(xml);
+		if (dom == null)
+			return 0;
+		Node result = dom.getElementsByTagName(IConstants.RESULT).item(0);
+		if (result.getNodeName().equalsIgnoreCase(IConstants.RESULT)) 
+			return Integer.parseInt(result.getFirstChild().getNodeValue());
+		return 0;
+	}
 }

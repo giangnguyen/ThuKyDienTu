@@ -20,7 +20,6 @@ import android.widget.CursorTreeAdapter;
 public class ScheduleListActivity extends ExpandableListActivity {
 
 	private CursorTreeAdapter mAdapter;
-	private int userId;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,10 +28,6 @@ public class ScheduleListActivity extends ExpandableListActivity {
 
 		// Set up our adapter
 		mAdapter = new ScheduleAdapter(this);
-
-		SharedPreferences prefs = getSharedPreferences(IConstants.PREF_NAME,
-				MODE_PRIVATE);
-		userId = prefs.getInt(IConstants.User.ID, 0);
 
 		setListAdapter(mAdapter);
 
@@ -73,7 +68,7 @@ public class ScheduleListActivity extends ExpandableListActivity {
 			startActivity(new Intent(getBaseContext(), LogonActivity.class));
 			finish();
 		case 1: {
-			new SyncService(this, userId, IConstants.DataType.SCHEDULE);
+			new SyncService(this, MainActivity.sUserId, IConstants.DataType.SCHEDULE);
 			break;
 		}
 		case 2: {

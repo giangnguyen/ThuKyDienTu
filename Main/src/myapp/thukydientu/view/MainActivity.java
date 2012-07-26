@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -43,6 +44,8 @@ public class MainActivity extends TabActivity {
     private LocalBroadcastManager mLocalBroadcastManager;
     private BroadcastReceiver mReceiver;
     
+    public static int sUserId;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,9 @@ public class MainActivity extends TabActivity {
         setContentView(R.layout.main);
         
         sInstance = this;
+        
+        SharedPreferences prefs = getSharedPreferences(IConstants.PREF_NAME, MODE_PRIVATE);
+        sUserId = prefs.getInt(IConstants.User.ID, 0);
         
         createTabLayout();
         

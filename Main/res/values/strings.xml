@@ -33,6 +33,10 @@
     <string name="share">Chia Sẽ</string>
     <string name="scan_qr">Quét Mã QR</string>
     <string name="docName">Tên Tài Liệu</string>
+    
+    <!-- Location -->
+    <string name="location">Vị Trí</string>
+    
     <string name="inform">Thông Báo</string>
     <string name="search">Tra Cứu</string>
     <string name="dayofweek">Thứ</string>
@@ -51,7 +55,6 @@
     <string name="className">Tên Lớp</string>
     <string name="subject">Môn Học</string>
     <string name="task">Nhiệm Vụ</string>
-    <string name="date">Ngày (DD/MM/YY)</string>
     <string name="day">Ngày</string>
     <string name="month">Tháng</string>
     <string name="year">Năm</string>
@@ -80,6 +83,7 @@
     <string name="title">Tiêu Đề</string>
     <string name="content">Nội Dung</string>
     <string name="submit">Gửi</string>
+    <string name="isprivate">Riêng Tư</string>
     
     <!-- Home -->
     <string name="home">Home</string>
@@ -110,7 +114,7 @@
     
     <!-- sync -->
     <string name="success">Thành Công!</string>
-    <string name="fail">Thất Bại!</string>
+    <string name="failed">Thất Bại!</string>
 
     <!-- file -->
     <string name="file_manager">Quản Lý Tài Liệu</string>

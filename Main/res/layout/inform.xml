@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal|right"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="7dp" >
 
@@ -27,10 +27,19 @@
         android:lines="5"
         android:padding="5dp" />
 
+    <CheckBox
+        android:id="@+id/isprivate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:checked="false"
+        android:text="@string/isprivate" />
+
     <Button
         android:id="@+id/submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:background="@drawable/selector_button"
         android:gravity="center"
         android:text="@string/submit"

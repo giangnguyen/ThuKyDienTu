@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="7dp" >
+
+    <Button
+        android:id="@+id/todo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_button"
+        android:gravity="center_vertical"
+        android:text="@string/todo"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/schedule"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/selector_button"
+        android:gravity="center_vertical"
+        android:text="@string/schedule"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/selector_button"
+        android:gravity="center_vertical"
+        android:text="@string/location"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>
