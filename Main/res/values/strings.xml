@@ -33,6 +33,10 @@
     <string name="share">Chia Sẽ</string>
     <string name="scan_qr">Quét Mã QR</string>
     <string name="docName">Tên Tài Liệu</string>
+    
+    <!-- Location -->
+    <string name="location">Vị Trí</string>
+    
     <string name="inform">Thông Báo</string>
     <string name="search">Tra Cứu</string>
     <string name="dayofweek">Thứ</string>
