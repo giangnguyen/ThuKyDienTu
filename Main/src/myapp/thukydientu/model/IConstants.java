@@ -116,4 +116,11 @@ public interface IConstants {
 	    public static final String MODE = "isprivate";
 	    public static final String CREATED = "created";
 	}
+	
+	class Inform {
+		public static final String TITLE = "title";
+		public static final String BODY = "body";
+		public static final String CREATED = "created";
+		public static final String ISPRIVATE = "isprivate";
+	}
 }

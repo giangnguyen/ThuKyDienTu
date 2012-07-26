@@ -3,17 +3,20 @@ package myapp.thukydientu.view;
 import myapp.thukydientu.R;
 import myapp.thukydientu.util.TimeUtils;
 import myapp.thukydientu.util.WebservicesUtils;
+import myapp.thukydientu.util.XMLUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -62,18 +65,18 @@ public class HomeActivity extends Activity {
 					.findViewById(R.id.title);
 			final EditText content = (EditText) informView
 					.findViewById(R.id.content);
+			final CheckBox mode = (CheckBox) informView.findViewById(R.id.isprivate);
 
-			Button submit = (Button) informView.findViewById(R.id.submit);
+			final Button submit = (Button) informView.findViewById(R.id.submit);
 			submit.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					removeDialog(DIALOG_INFORM_INPUT);
 					final String titleString = title.getText().toString();
 					final String contentString = content.getText().toString();
-					Toast.makeText(
-							HomeActivity.this,
-							"title: " + titleString + " content: "
-									+ contentString, Toast.LENGTH_LONG).show();
+					final boolean isprivate = mode.isChecked();
+					new InformTask(titleString, contentString, isprivate).execute();
 				}
 			});
 
@@ -95,6 +98,31 @@ public class HomeActivity extends Activity {
 		}
 	}
 
+	class InformTask extends AsyncTask<Void, Void, String> {
+
+		private String mTitle;
+		private String mContent; 
+		private boolean isPrivate;
+		
+		public InformTask(String title, String content, boolean isprivate) {
+			this.mTitle = title;
+			this.mContent = content;
+			this.isPrivate = isprivate;
+		}
+		@Override
+		protected String doInBackground(Void... params) {
+			return WebservicesUtils.addNotice(MainActivity.sUserId, mTitle, mContent, TimeUtils.convert2String14(System.currentTimeMillis()), isPrivate);
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			if (XMLUtils.addNoticeResult(result) == 1) 
+				Toast.makeText(HomeActivity.this, R.string.success, Toast.LENGTH_SHORT).show();
+			else 
+				Toast.makeText(HomeActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
+		}
+		
+	}
 	public void shareLocation() {
 		final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		LocationListener locationListener = new LocationListener() {
