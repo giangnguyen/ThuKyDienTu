@@ -33,7 +33,7 @@ public class WebservicesUtils {
 	private static final String NAMESPACE = "http://tempuri.org/";
 	private static final String WEB_SERVICES_URL = "http://kanzenvietnam.co.cc/tester/weservice/server.php";
 
-	// query constants
+	// method
 	private static final String REGISTER_METHOD = "register";
 	private static final String LOGIN_METHOD = "checkLogin";
 	private static final String CHANGE_PASS_METHOD = "changePass";
@@ -51,23 +51,36 @@ public class WebservicesUtils {
 	private static final String UPDATE_SCHEDULE_METHOD = "updateSchedule";
 	private static final String SYNC_METHOD = "sync_web_service";
 	private static final String SHARE_LOCATION_METHOD = "addLatitude";
-	private static final String REGISTER_ACTION = "http://tempuri.org/register";
-	private static final String LOGIN_ACTION = "http://tempuri.org/checkLogin";
-	private static final String CHANGE_PASS_ACTION = "http://tempuri.org/changePass";
-	private static final String UPDATE_FILE_ACTION = "http://tempuri.org/updateFile";
-	private static final String GET_FILE_ACTION = "http://tempuri.org/getFile";
-	private static final String DEL_FILE_ACTION = "http://tempuri.org/delFile";
-	private static final String GET_TODO_ACTION = "http://tempuri.org/getTodo";
-	private static final String ADD_TODO_ACTION = "http://tempuri.org/addTodo";
-	private static final String SYNC_TODO_ACTION = "http://tempuri.org/sync_todo_app";
-	private static final String UPDATE_TODO_ACTION = "http://tempuri.org/updateTodo";
-	private static final String DEL_TODO_ACTION = "http://tempuri.org/delTodo";
-	private static final String GET_SCHEDULE_ACTION = "http://tempuri.org/getSchedule";
-	private static final String ADD_SCHEDULE_ACTION = "http://tempuri.org/addSchedule";
-	private static final String SYNC_SCHEDULE_ACTION = "http://tempuri.org/sync_schedule_app";
-	private static final String UPDATE_SCHEDULE_ACTION = "http://tempuri.org/updateSchedule";
-	private static final String SYNC_ACTION = "http://tempuri.org/sync_web_service";
-	private static final String SHARE_LOCATION_ACTION = "http://tempuri.org/addLatitude";
+	private static final String ADD_NOTICE_METHOD = "addNotice";
+
+	// action
+	private static final String REGISTER_ACTION = NAMESPACE + REGISTER_METHOD;
+	private static final String LOGIN_ACTION = NAMESPACE + LOGIN_METHOD;
+	private static final String CHANGE_PASS_ACTION = NAMESPACE
+			+ CHANGE_PASS_METHOD;
+	private static final String UPDATE_FILE_ACTION = NAMESPACE
+			+ UPDATE_FILE_METHOD;
+	private static final String GET_FILE_ACTION = NAMESPACE + GET_FILE_METHOD;
+	private static final String DEL_FILE_ACTION = NAMESPACE + DEL_FILE_METHOD;
+	private static final String GET_TODO_ACTION = NAMESPACE + GET_TODO_METHOD;
+	private static final String ADD_TODO_ACTION = NAMESPACE + ADD_TODO_METHOD;
+	private static final String SYNC_TODO_ACTION = NAMESPACE + SYNC_TODO_METHOD;
+	private static final String UPDATE_TODO_ACTION = NAMESPACE
+			+ UPDATE_TODO_METHOD;
+	private static final String DEL_TODO_ACTION = NAMESPACE + DEL_TODO_METHOD;
+	private static final String GET_SCHEDULE_ACTION = NAMESPACE
+			+ GET_SCHEDULE_MEDHOD;
+	private static final String ADD_SCHEDULE_ACTION = NAMESPACE
+			+ ADD_SCHEDULE_METHOD;
+	private static final String SYNC_SCHEDULE_ACTION = NAMESPACE
+			+ SYNC_SCHEDULE_METHOD;
+	private static final String UPDATE_SCHEDULE_ACTION = NAMESPACE
+			+ UPDATE_SCHEDULE_METHOD;
+	private static final String SYNC_ACTION = NAMESPACE + SYNC_METHOD;
+	private static final String SHARE_LOCATION_ACTION = NAMESPACE
+			+ SHARE_LOCATION_METHOD;
+	private static final String ADD_NOTICE_ACTION = NAMESPACE
+			+ ADD_NOTICE_METHOD;
 
 	private static String callWebServices(String action, SoapObject request) {
 
@@ -381,5 +394,18 @@ public class WebservicesUtils {
 		request.addProperty(IConstants.WebServices.TABLE_NAME, tablename);
 
 		return callWebServices(SYNC_ACTION, request);
+	}
+
+	public static String addNotice(int userId, String title, String content,
+			String created, boolean isPrivate) {
+		// make request
+		SoapObject request = new SoapObject(NAMESPACE, ADD_NOTICE_METHOD);
+		request.addProperty(IConstants.User.ID, userId);
+		request.addProperty(IConstants.Inform.TITLE, title);
+		request.addProperty(IConstants.Inform.BODY, content);
+		request.addProperty(IConstants.Inform.CREATED, created);
+		request.addProperty(IConstants.Inform.ISPRIVATE, isPrivate ? 1 : 0);
+
+		return callWebServices(ADD_NOTICE_ACTION, request);
 	}
 }
