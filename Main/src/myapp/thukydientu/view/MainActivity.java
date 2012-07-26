@@ -7,6 +7,7 @@ import myapp.thukydientu.R;
 import myapp.thukydientu.controller.HintTimeManager;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.TimeDuration;
+import myapp.thukydientu.service.DownloadService;
 import myapp.thukydientu.util.FileUtils;
 import myapp.thukydientu.util.TimeUtils;
 import android.app.AlertDialog;

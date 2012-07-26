@@ -397,14 +397,13 @@ public class WebservicesUtils {
 	}
 
 	public static String addNotice(int userId, String title, String content,
-			String created, boolean isPrivate) {
+			String created) {
 		// make request
 		SoapObject request = new SoapObject(NAMESPACE, ADD_NOTICE_METHOD);
 		request.addProperty(IConstants.User.ID, userId);
 		request.addProperty(IConstants.Inform.TITLE, title);
 		request.addProperty(IConstants.Inform.BODY, content);
 		request.addProperty(IConstants.Inform.CREATED, created);
-		request.addProperty(IConstants.Inform.ISPRIVATE, isPrivate ? 1 : 0);
 
 		return callWebServices(ADD_NOTICE_ACTION, request);
 	}

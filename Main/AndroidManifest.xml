@@ -261,7 +261,8 @@
             android:name=".provider.TKDTProvider"
             android:authorities="myapp.thukydientu.provider.provider.TKDTProvider" />
 
-        <service android:name=".controller.DownloadService" />
+        <service android:name=".service.DownloadService" />
+        <service android:name=".service.ShareLocationService" />
     </application>
 
 </manifest>

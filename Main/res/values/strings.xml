@@ -30,12 +30,14 @@
     <string name="sync">Đồng Bộ</string>
     <string name="view">Xem</string>
     <string name="hint">Gợi Ý</string>
-    <string name="share">Chia Sẽ</string>
+    <string name="share">Chia Sẻ</string>
     <string name="scan_qr">Quét Mã QR</string>
     <string name="docName">Tên Tài Liệu</string>
-    
+
     <!-- Location -->
     <string name="location">Vị Trí</string>
+    <string name="share_location">Chia Sẻ Vị Trí</string>
+    <string name="repeat">Lặp Lại</string>
     
     <string name="inform">Thông Báo</string>
     <string name="search">Tra Cứu</string>
@@ -78,13 +80,12 @@
     <string name="lesson_duration">Thời Gian/Tiết (Phút)</string>
     <string name="from"><i>Từ: </i></string>
     <string name="to"><i>Đến: </i></string>
-    
+
     <!-- Inform -->
     <string name="title">Tiêu Đề</string>
     <string name="content">Nội Dung</string>
     <string name="submit">Gửi</string>
-    <string name="isprivate">Riêng Tư</string>
-    
+
     <!-- Home -->
     <string name="home">Home</string>
 
@@ -100,7 +101,6 @@
         <item>9</item>
         <item>10</item>
     </string-array>
-    
     <string-array name="lesson_duration">
         <item>15</item>
         <item>30</item>
@@ -111,7 +111,7 @@
         <item>100</item>
         <item>120</item>
     </string-array>
-    
+
     <!-- sync -->
     <string name="success">Thành Công!</string>
     <string name="failed">Thất Bại!</string>

@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,7 +50,6 @@ public class ScheduleListActivity extends ExpandableListActivity {
 		MenuItem deleteItem = menu.add(0, 2, 2, "Xóa tất cả");
 		deleteItem.setIcon(R.drawable.ic_menu_clear_list);
 
-		menu.add(0, 3, 3, "QR Code");
 	}
 
 	@Override
@@ -99,31 +97,11 @@ public class ScheduleListActivity extends ExpandableListActivity {
 
 			break;
 		}
-		case 3:
-			Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-			intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-			startActivityForResult(intent, 0);
-			break;
 		}
 		return true;
 
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 0) {
-			if (resultCode == RESULT_OK) {
-				String contents = data.getStringExtra("SCAN_RESULT");
-				String format = data.getStringExtra("SCAN_RESULT_FORMAT");
-				// Handle successful scan
-				Log.d("format", format);
-				Log.d("contents", contents);
-			} else if (resultCode == RESULT_CANCELED) {
-				// Handle cancel
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
 
 	@Override
 	protected void onDestroy() {

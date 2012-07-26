@@ -27,37 +27,38 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 public class DownloadService extends Service {
-	
+
 	private static final int BUFFER_SIZE = 1024;
 	private final String ROOT = Environment.getExternalStorageDirectory() + "";
 	private final File SAVE_DIR = new File(ROOT + "/ThuKyDienTu/Documents");
 	private final String INCOMPLETED = "_incompleted";
-	
+
 	private int fileLength;
-	
+
 	private String mFileName;
 	private static String mLastModifed = "";
-	
+
 	private ProgressBar mProgressBar;
 	private LocalBroadcastManager mLocalBroadcastManager;
 	private DownloadTask mDownloadTask;
-	
+
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
-	
-	public DownloadService(Context context, MyFile file){
+
+	public DownloadService(Context context, MyFile file) {
 		mLocalBroadcastManager = LocalBroadcastManager.getInstance(context);
 		mFileName = file.getFileName();
-		
+
 		createSaveFolder();
-		mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.status);
-		
+		mProgressBar = (ProgressBar) ((Activity) context)
+				.findViewById(R.id.status);
+
 		mDownloadTask = new DownloadTask();
 		mDownloadTask.execute(file.getLink());
 	}
-	
+
 	public void createSaveFolder() {
 		try {
 			SAVE_DIR.mkdirs();
@@ -65,43 +66,46 @@ public class DownloadService extends Service {
 			Log.e(SAVE_DIR + "", "unable to write on the sd card ");
 		}
 	}
-	
-	private long checkIncompleted(){
-        File from = new File(SAVE_DIR, mFileName + INCOMPLETED);
-        if(from.exists()){
-            Log.d("status","download is incomplete, filesize:" + from.length());
-            return from.length();
-        }
-        return 0;
-    }
-	
-	public void cancel(){
+
+	private long checkIncompleted() {
+		File from = new File(SAVE_DIR, mFileName + INCOMPLETED);
+		if (from.exists()) {
+			Log.d("status", "download is incomplete, filesize:" + from.length());
+			return from.length();
+		}
+		return 0;
 	}
-	
-	
+
+	public void cancel() {
+	}
+
 	public class DownloadTask extends AsyncTask<String, Integer, Integer> {
 
 		@Override
 		protected Integer doInBackground(String... Url) {
-			final String mDownloadURL = Url[0].replace(" ", "%20"); 
+			final String mDownloadURL = Url[0].replace(" ", "%20");
 			InputStream inputStream = null;
-			FileOutputStream fileOutputStream = null; 
-			
+			FileOutputStream fileOutputStream = null;
+
 			try {
 				final URL url = new URL(mDownloadURL);
-				HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+				HttpURLConnection httpURLConnection = (HttpURLConnection) url
+						.openConnection();
 				httpURLConnection.setRequestMethod("GET");
 				long downloaded = checkIncompleted();
-				httpURLConnection.setRequestProperty("Range", "bytes=" + downloaded + "-");
+				httpURLConnection.setRequestProperty("Range", "bytes="
+						+ downloaded + "-");
 				httpURLConnection.setRequestProperty("If-Range", mLastModifed);
 				httpURLConnection.setDoOutput(true);
 				httpURLConnection.setDoInput(true);
 				httpURLConnection.connect();
-				mLastModifed = httpURLConnection.getHeaderField("Last-Modified");
+				mLastModifed = httpURLConnection
+						.getHeaderField("Last-Modified");
 
 				inputStream = httpURLConnection.getInputStream();
 				fileLength = httpURLConnection.getContentLength();
-				fileOutputStream = new FileOutputStream(new File(SAVE_DIR, mFileName + INCOMPLETED));
+				fileOutputStream = new FileOutputStream(new File(SAVE_DIR,
+						mFileName + INCOMPLETED));
 
 				byte[] buffer = new byte[BUFFER_SIZE]; // 1kb
 				int len = 0;
@@ -113,7 +117,7 @@ public class DownloadService extends Service {
 					if (isCancelled())
 						break;
 				}
-				
+
 				if (downloaded >= fileLength)
 					return IConstants.Results.RESULT_OK;
 
@@ -147,43 +151,40 @@ public class DownloadService extends Service {
 
 		@Override
 		protected void onPreExecute() {
-			mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_STARTED));
+			mLocalBroadcastManager.sendBroadcast(new Intent(
+					IConstants.Service.DOWNLOAD_ACTION_STARTED));
 			mProgressBar.setVisibility(View.VISIBLE);
 		}
-		
+
 		@Override
 		protected void onProgressUpdate(Integer... progress) {
-			if(mProgressBar != null){
-                mProgressBar.setProgress(progress[0]);
-            }else{
-                Log.w("status", "mProgressBar is null, please supply one!");
-            }
+			if (mProgressBar != null) {
+				mProgressBar.setProgress(progress[0]);
+			} else {
+				Log.w("status", "mProgressBar is null, please supply one!");
+			}
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
+			
 			if (result == IConstants.Results.RESULT_OK) {
-				 File from = new File(SAVE_DIR, mFileName + INCOMPLETED);
-		         File to = new File(SAVE_DIR, mFileName);
-		         from.renameTo(to);
-		         MainActivity.sFilePath = to.getPath();
+				File from = new File(SAVE_DIR, mFileName + INCOMPLETED);
+				File to = new File(SAVE_DIR, mFileName);
+				from.renameTo(to);
+				MainActivity.sFilePath = to.getPath();
 			}
 			mProgressBar.setVisibility(View.GONE);
-			mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_FINISHED));
+			mLocalBroadcastManager.sendBroadcast(new Intent(
+					IConstants.Service.DOWNLOAD_ACTION_FINISHED));
+			
+			stopSelf();
 		}
-		
-		@Override
-        protected void onCancelled(){
-            mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_CANCELLED));
-        }
-	}
-
-	public class UploadTask extends AsyncTask<String, Integer, Integer> {
 
 		@Override
-		protected Integer doInBackground(String... params) {
-			return null;
+		protected void onCancelled() {
+			mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_CANCELLED));
 		}
-		
 	}
+
 }

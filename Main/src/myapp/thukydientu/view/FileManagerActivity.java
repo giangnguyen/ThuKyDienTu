@@ -14,6 +14,7 @@ import myapp.thukydientu.controller.Connection;
 import myapp.thukydientu.model.BackToMainActivity;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.MyFile;
+import myapp.thukydientu.service.DownloadService;
 import myapp.thukydientu.util.FileUtils;
 import myapp.thukydientu.util.WebservicesUtils;
 import myapp.thukydientu.util.XMLUtils;
@@ -200,7 +201,7 @@ public class FileManagerActivity extends BackToMainActivity {
 							.setPositiveButton("Đồng Ý", new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									new myapp.thukydientu.service.DownloadService(mContext, file);
+									new DownloadService(mContext, file);
 								}
 							})
 							.setNegativeButton("Hủy", new OnClickListener() {
