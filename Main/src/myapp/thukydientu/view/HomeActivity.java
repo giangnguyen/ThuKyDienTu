@@ -111,6 +111,15 @@ public class HomeActivity extends Activity {
 				}
 			});
 			
+			Button shareSchedule = (Button) shareView.findViewById(R.id.schedule);
+			shareSchedule.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					removeDialog(DIALOG_SHARE);
+					WebservicesUtils.getSchedule(MainActivity.sUserId, -1);
+				}
+			});
+			
 			builder.setTitle(R.string.share);
 			builder.setView(shareView);
 
