@@ -38,7 +38,6 @@
     <string name="location">Vị Trí</string>
     <string name="share_location">Chia Sẻ Vị Trí</string>
     <string name="repeat">Lặp Lại</string>
-    
     <string name="inform">Thông Báo</string>
     <string name="search">Tra Cứu</string>
     <string name="dayofweek">Thứ</string>
@@ -72,6 +71,9 @@
     <string name="alarm">Chuông báo thức</string>
     <string name="todo_title">Thêm Sự Kiện</string>
     <string name="detail">Chi tiết</string>
+    <string name="start_date">Ngày Bắt Đầu</string>
+    <string name="end_date">Ngày Kết Thúc</string>
+    <string name="share_todo">Chia Sẻ Lịch Làm Việc</string>
 
     <!-- Schedule Detail -->
     <string name="edit">Edit</string>

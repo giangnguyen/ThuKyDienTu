@@ -295,8 +295,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    menu.add(Menu.NONE, SHARE_ID, Menu.NONE, R.string.menu_share)
-        .setIcon(android.R.drawable.ic_menu_share);
     menu.add(Menu.NONE, HISTORY_ID, Menu.NONE, R.string.menu_history)
         .setIcon(android.R.drawable.ic_menu_recent_history);
     menu.add(Menu.NONE, SETTINGS_ID, Menu.NONE, R.string.menu_settings)

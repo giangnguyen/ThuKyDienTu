@@ -123,4 +123,11 @@ public interface IConstants {
 		public static final String CREATED = "created";
 		public static final String ISPRIVATE = "isprivate";
 	}
+	
+	class TodoShare {
+		public static final String USER_ID = "userid";
+		public static final String TABLE = "table";
+		public static final String DATE_START = "datestart";
+		public static final String DATE_END = "dateend";
+	}
 }

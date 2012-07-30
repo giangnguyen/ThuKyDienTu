@@ -16,12 +16,11 @@
 
 package com.google.zxing.client.android.encode;
 
-import android.view.Display;
-import android.view.WindowManager;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.android.FinishListener;
-import com.google.zxing.client.android.Intents;
-import com.google.zxing.client.android.R;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,16 +30,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.regex.Pattern;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.android.FinishListener;
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.client.android.R;
 
 /**
  * This class encodes data from an Intent into a QR code, and then displays it full screen so that
@@ -200,12 +199,9 @@ public final class EncodeActivity extends Activity {
       ImageView view = (ImageView) findViewById(R.id.image_view);
       view.setImageBitmap(bitmap);
 
-      TextView contents = (TextView) findViewById(R.id.contents_text_view);
       if (intent.getBooleanExtra(Intents.Encode.SHOW_CONTENTS, true)) {
-        contents.setText(qrCodeEncoder.getDisplayContents());
         setTitle(getString(R.string.app_name) + " - " + qrCodeEncoder.getTitle());
       } else {
-        contents.setText("");
         setTitle(getString(R.string.app_name));
       }
     } catch (WriterException e) {

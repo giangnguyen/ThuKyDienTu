@@ -1,12 +1,17 @@
 package myapp.thukydientu.view;
 
+import java.util.Calendar;
+
 import myapp.thukydientu.R;
 import myapp.thukydientu.service.ShareLocationService;
+import myapp.thukydientu.util.QREncodeUtil;
 import myapp.thukydientu.util.TimeUtils;
 import myapp.thukydientu.util.WebservicesUtils;
 import myapp.thukydientu.util.XMLUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +25,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,14 +34,28 @@ public class HomeActivity extends Activity {
 	public static final int DIALOG_INFORM_INPUT = 1;
 	public static final int DIALOG_SHARE = 2;
 	public static final int DIALOG_OPTION_LOCATION = 3;
+	public static final int DIALOG_OPTION_TODO = 4;
+	public static final int DIALOG_DATE_PICKER = 5;
 	
 	private static final int SCAN_REQUEST_CODE = 100;
 
+	private Calendar mDateStart;
+	private Calendar mDateEnd;
+	
+	private Button dateStartButton;
+	private Button dateEndButton;
+	
+	private boolean isDateStartPick;
+	protected final String tag = HomeActivity.class.getName();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
+		mDateStart = Calendar.getInstance();
+		mDateEnd = Calendar.getInstance();
+		
 		View share = findViewById(R.id.share);
 		share.setOnClickListener(new View.OnClickListener() {
 
@@ -111,6 +131,15 @@ public class HomeActivity extends Activity {
 				}
 			});
 			
+			Button todo = (Button) shareView.findViewById(R.id.todo);
+			todo.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					removeDialog(DIALOG_SHARE);
+					showDialog(DIALOG_OPTION_TODO);
+				}
+			});
+			
 			builder.setTitle(R.string.share);
 			builder.setView(shareView);
 
@@ -145,11 +174,73 @@ public class HomeActivity extends Activity {
 			});
 			return builder.create();
 			
+		case DIALOG_OPTION_TODO:
+			
+			final View optionTodoView = LayoutInflater.from(this).inflate(R.layout.todo_share_dialog, null);
+			dateStartButton = (Button) optionTodoView.findViewById(R.id.start_date);
+			dateEndButton = (Button) optionTodoView.findViewById(R.id.end_date);
+
+			dateStartButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateStart.getTimeInMillis()));
+			dateEndButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateEnd.getTimeInMillis()));
+			
+			dateStartButton.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					isDateStartPick = true;
+					showDialog(DIALOG_DATE_PICKER);
+				}
+			});
+			
+			dateEndButton.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					isDateStartPick = false;
+					showDialog(DIALOG_DATE_PICKER);
+				}
+			});
+			
+			builder.setTitle(R.string.share_todo);
+			builder.setView(optionTodoView);
+			builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					final String startDateString = TimeUtils.getDate(mDateStart.getTimeInMillis());
+					final String endDateString = TimeUtils.getDate(mDateEnd.getTimeInMillis());
+					final String table = "todo";
+					final String QRText = QREncodeUtil.convertTodo2QRText(MainActivity.sUserId, table, startDateString, endDateString);
+					QREncodeUtil.textEncode(HomeActivity.this, QRText);
+				}
+			});
+			return builder.create();
+
+		case DIALOG_DATE_PICKER:
+			if (isDateStartPick)
+				return new DatePickerDialog(this, dateSetListener, mDateStart.get(Calendar.YEAR), mDateStart.get(Calendar.MONTH), mDateStart.get(Calendar.DAY_OF_MONTH));
+			else 
+				return new DatePickerDialog(this, dateSetListener, mDateEnd.get(Calendar.YEAR), mDateEnd.get(Calendar.MONTH), mDateEnd.get(Calendar.DAY_OF_MONTH));
 		default:
 			return null;
 		}
 	}
 
+	private DatePickerDialog.OnDateSetListener dateSetListener = new OnDateSetListener() {
+		
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+			Log.d(tag, "Year: " + year + ", Month: " + monthOfYear + ", day: " + dayOfMonth);
+			if (isDateStartPick) {
+				mDateStart.set(year, monthOfYear, dayOfMonth);
+				dateStartButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateStart.getTimeInMillis()));
+			} else { 
+				mDateEnd.set(year, monthOfYear, dayOfMonth);
+				dateEndButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateEnd.getTimeInMillis()));
+			}
+		}
+	};
+	
+	
 	class InformTask extends AsyncTask<Void, Void, String> {
 
 		private String mTitle;
@@ -178,11 +269,15 @@ public class HomeActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SCAN_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-				String contents = data.getStringExtra("SCAN_RESULT");
-				String format = data.getStringExtra("SCAN_RESULT_FORMAT");
+				String qrtext = data.getStringExtra("SCAN_RESULT");
 				// Handle successful scan
-				Log.d("format", format);
-				Log.d("contents", contents);
+				Log.d(tag, "qrtext: " + qrtext);
+				final int userId = QREncodeUtil.getUserIdFromQRText(qrtext);
+				final String table = QREncodeUtil.getTableFromQRText(qrtext);
+				final String dateStart = QREncodeUtil.getDateStartFromQRText(qrtext);
+				final String dateEnd = QREncodeUtil.getDateEndFromQRText(qrtext);
+				
+				final String result = WebservicesUtils.getTodoShare(userId, table, dateStart, dateEnd);
 			} else if (resultCode == RESULT_CANCELED) {
 				// Handle cancel
 			}
