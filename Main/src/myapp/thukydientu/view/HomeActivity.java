@@ -131,12 +131,21 @@ public class HomeActivity extends Activity {
 				}
 			});
 			
+<<<<<<< HEAD
 			Button todo = (Button) shareView.findViewById(R.id.todo);
 			todo.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					removeDialog(DIALOG_SHARE);
 					showDialog(DIALOG_OPTION_TODO);
+=======
+			Button shareSchedule = (Button) shareView.findViewById(R.id.schedule);
+			shareSchedule.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					removeDialog(DIALOG_SHARE);
+					WebservicesUtils.getSchedule(MainActivity.sUserId, -1);
+>>>>>>> 34068823715f45b30f10ef3cf8a8fbc791fee72b
 				}
 			});
 			
