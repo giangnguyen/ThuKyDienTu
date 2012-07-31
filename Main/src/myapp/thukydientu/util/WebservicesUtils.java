@@ -53,6 +53,7 @@ public class WebservicesUtils {
 	private static final String SHARE_LOCATION_METHOD = "addLatitude";
 	private static final String ADD_NOTICE_METHOD = "addNotice";
 	private static final String GET_TODO_SHARE_METHOD = "getQRInfo";
+	private static final String GET_SCHEDULE_SHARE_METHOD = "getQRSchedule";
 
 	// action
 	private static final String REGISTER_ACTION = NAMESPACE + REGISTER_METHOD;
@@ -84,6 +85,8 @@ public class WebservicesUtils {
 			+ ADD_NOTICE_METHOD;
 	private static final String GET_TODO_SHARE_ACTION = NAMESPACE
 			+ GET_TODO_SHARE_METHOD ;
+	private static final String GET_SCHEDULE_SHARE_ACTION = NAMESPACE
+			+ GET_SCHEDULE_SHARE_METHOD ;
 
 	private static String callWebServices(String action, SoapObject request) {
 
@@ -353,6 +356,14 @@ public class WebservicesUtils {
 		return callWebServices(UPDATE_TODO_ACTION, request);
 	}
 
+	public static String getQRSchedule(int userId, int dateName) {
+		// make request
+		SoapObject request = new SoapObject(NAMESPACE, GET_SCHEDULE_SHARE_METHOD);
+		request.addProperty(IConstants.ScheduleShare.USER_ID, userId);
+		request.addProperty(IConstants.ScheduleShare.DATE_NAME, dateName);
+		
+		return callWebServices(GET_SCHEDULE_SHARE_ACTION, request);
+	}
 	public static String getSchedule(int userId, int scheduleId) {
 		// make request
 		SoapObject request = new SoapObject(NAMESPACE, GET_SCHEDULE_MEDHOD);

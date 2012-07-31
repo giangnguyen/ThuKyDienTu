@@ -130,4 +130,9 @@ public interface IConstants {
 		public static final String DATE_START = "datestart";
 		public static final String DATE_END = "dateend";
 	}
+	
+	class ScheduleShare {
+		public static final String USER_ID = "userid";
+		public static final String DATE_NAME = "datename";
+	}
 }

@@ -1,8 +1,12 @@
 package myapp.thukydientu.view;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import myapp.thukydientu.R;
+import myapp.thukydientu.adapter.ScheduleShareAdapter;
+import myapp.thukydientu.model.Schedule;
 import myapp.thukydientu.service.ShareLocationService;
 import myapp.thukydientu.util.QREncodeUtil;
 import myapp.thukydientu.util.TimeUtils;
@@ -27,6 +31,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 public class HomeActivity extends Activity {
@@ -35,7 +40,8 @@ public class HomeActivity extends Activity {
 	public static final int DIALOG_SHARE = 2;
 	public static final int DIALOG_OPTION_LOCATION = 3;
 	public static final int DIALOG_OPTION_TODO = 4;
-	public static final int DIALOG_DATE_PICKER = 5;
+	public static final int DIALOG_SCHEDULE_SHARE = 5;
+	public static final int DIALOG_DATE_PICKER = 6;
 	
 	private static final int SCAN_REQUEST_CODE = 100;
 
@@ -94,7 +100,7 @@ public class HomeActivity extends Activity {
 
 		case DIALOG_INFORM_INPUT:
 
-			View informView = LayoutInflater.from(this).inflate(
+			View informView = getLayoutInflater().inflate(
 					R.layout.inform, null);
 
 			final EditText title = (EditText) informView
@@ -120,7 +126,7 @@ public class HomeActivity extends Activity {
 
 		case DIALOG_SHARE:
 
-			View shareView = LayoutInflater.from(this).inflate(R.layout.share_dialog, null);
+			View shareView = getLayoutInflater().inflate(R.layout.share_dialog, null);
 
 			Button shareLocation = (Button) shareView.findViewById(R.id.location);
 			shareLocation.setOnClickListener(new View.OnClickListener() {
@@ -131,21 +137,21 @@ public class HomeActivity extends Activity {
 				}
 			});
 			
-<<<<<<< HEAD
 			Button todo = (Button) shareView.findViewById(R.id.todo);
 			todo.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					removeDialog(DIALOG_SHARE);
 					showDialog(DIALOG_OPTION_TODO);
-=======
-			Button shareSchedule = (Button) shareView.findViewById(R.id.schedule);
-			shareSchedule.setOnClickListener(new View.OnClickListener() {
+					}
+			});
+			
+			Button schedule = (Button) shareView.findViewById(R.id.schedule);
+			schedule.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					removeDialog(DIALOG_SHARE);
 					WebservicesUtils.getSchedule(MainActivity.sUserId, -1);
->>>>>>> 34068823715f45b30f10ef3cf8a8fbc791fee72b
 				}
 			});
 			
@@ -156,7 +162,7 @@ public class HomeActivity extends Activity {
 			
 		case DIALOG_OPTION_LOCATION:
 			
-			final View optionLocationView = LayoutInflater.from(this).inflate(R.layout.location_option_dialog, null);
+			final View optionLocationView = getLayoutInflater().inflate(R.layout.location_option_dialog, null);
 			final CheckBox repeat = (CheckBox) optionLocationView.findViewById(R.id.repeat);
 			final EditText minuteView = (EditText) optionLocationView.findViewById(R.id.minute);
 
@@ -181,6 +187,20 @@ public class HomeActivity extends Activity {
 					new ShareLocationService(HomeActivity.this, minutes);
 				}
 			});
+			return builder.create();
+			
+		case DIALOG_SCHEDULE_SHARE:
+			final View scheduleShareView = getLayoutInflater().inflate(R.layout.schedule_share_dialog, null);
+			final View loading = scheduleShareView.findViewById(R.id.loading);
+			final ExpandableListView listScheduleShare = (ExpandableListView) scheduleShareView.findViewById(R.id.schedule_share);
+			
+			ScheduleShareAdapter scheduleShareAdapter = new ScheduleShareAdapter(this);
+			listScheduleShare.setAdapter(scheduleShareAdapter);
+			
+			new ListScheduleTask(scheduleShareAdapter, loading, listScheduleShare).execute(1,-1);
+			
+			builder.setView(scheduleShareView);
+			
 			return builder.create();
 			
 		case DIALOG_OPTION_TODO:
@@ -249,7 +269,37 @@ public class HomeActivity extends Activity {
 		}
 	};
 	
-	
+	class ListScheduleTask extends AsyncTask<Integer, Void, String> {
+
+		private View loading;
+		private View list;
+		private ScheduleShareAdapter adapter;
+		
+		public ListScheduleTask(ScheduleShareAdapter adapter, View loading, View list) {
+			this.adapter = adapter;
+			this.loading = loading;
+			this.list = list;
+		}
+		
+		@Override
+		protected String doInBackground(Integer... params) {
+			final int userId = params[0];
+			final int dateName = params[1];
+			return WebservicesUtils.getQRSchedule(userId, dateName);
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (!TextUtils.isEmpty(result)) {
+				adapter.setListSchedule(XMLUtils.getSchedule(result));
+				loading.setVisibility(View.GONE);
+				list.setVisibility(View.VISIBLE);
+			}
+		}
+		
+		
+		
+	}
 	class InformTask extends AsyncTask<Void, Void, String> {
 
 		private String mTitle;

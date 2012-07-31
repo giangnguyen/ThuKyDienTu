@@ -22,11 +22,15 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 	private int[] dayOfWeeks = new int[] {1, 2, 3, 4, 5, 6, 7};
 	private List<Schedule> mListSchedule = new ArrayList<Schedule>();
 	
-	public ScheduleShareAdapter(Context context, List<Schedule> listSchedule) {
+	public ScheduleShareAdapter(Context context) {
 		mContext = context;
-		mListSchedule = listSchedule;
 	}
 
+	public void setListSchedule(List<Schedule> listSchedule) {
+		mListSchedule = listSchedule;
+		notifyDataSetChanged();
+	}
+	
 	class GroupHolder {
 		TextView dateName;
 		TextView count;
