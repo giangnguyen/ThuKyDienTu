@@ -1,12 +1,10 @@
 package myapp.thukydientu.view;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import myapp.thukydientu.R;
 import myapp.thukydientu.adapter.ScheduleShareAdapter;
-import myapp.thukydientu.model.Schedule;
+import myapp.thukydientu.adapter.TodoShareAdapter;
 import myapp.thukydientu.service.ShareLocationService;
 import myapp.thukydientu.util.QREncodeUtil;
 import myapp.thukydientu.util.TimeUtils;
@@ -32,6 +30,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class HomeActivity extends Activity {
@@ -40,8 +39,11 @@ public class HomeActivity extends Activity {
 	public static final int DIALOG_SHARE = 2;
 	public static final int DIALOG_OPTION_LOCATION = 3;
 	public static final int DIALOG_OPTION_TODO = 4;
-	public static final int DIALOG_SCHEDULE_SHARE = 5;
-	public static final int DIALOG_DATE_PICKER = 6;
+	public static final int DIALOG_OPTION_SCHEDULE = 5;
+	public static final int DIALOG_SCHEDULE_SHARE = 6;
+	public static final int DIALOG_DATE_PICKER = 7;
+	public static final int DIALOG_SCHEDULE_SHARE_RESULT = 8;
+	public static final int DIALOG_TODO_SHARE = 9;
 	
 	private static final int SCAN_REQUEST_CODE = 100;
 
@@ -50,6 +52,9 @@ public class HomeActivity extends Activity {
 	
 	private Button dateStartButton;
 	private Button dateEndButton;
+	
+	private String dateStart = "";
+	private String dateEnd = "";
 	
 	private boolean isDateStartPick;
 	protected final String tag = HomeActivity.class.getName();
@@ -92,6 +97,7 @@ public class HomeActivity extends Activity {
 
 	}
 
+	int shareDayName;
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -151,7 +157,7 @@ public class HomeActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					removeDialog(DIALOG_SHARE);
-					WebservicesUtils.getSchedule(MainActivity.sUserId, -1);
+					showDialog(DIALOG_OPTION_SCHEDULE);
 				}
 			});
 			
@@ -197,10 +203,36 @@ public class HomeActivity extends Activity {
 			ScheduleShareAdapter scheduleShareAdapter = new ScheduleShareAdapter(this);
 			listScheduleShare.setAdapter(scheduleShareAdapter);
 			
-			new ListScheduleTask(scheduleShareAdapter, loading, listScheduleShare).execute(1,-1);
+			new ListScheduleTask(scheduleShareAdapter, loading, listScheduleShare).execute(shareUserId, shareDayName);
 			
 			builder.setView(scheduleShareView);
 			
+			return builder.create();
+			
+		case DIALOG_TODO_SHARE:
+			final View todoShareView = getLayoutInflater().inflate(R.layout.todo_share_result_dialog, null);
+			final View todoLoading = todoShareView.findViewById(R.id.loading);
+			final ListView listTodoShare = (ListView) todoShareView.findViewById(R.id.todo_share);
+			
+			TodoShareAdapter todoShareAdapter = new TodoShareAdapter(this);
+			listTodoShare.setAdapter(todoShareAdapter);
+			
+			new ListTodoTask(todoShareAdapter, todoLoading, listTodoShare).execute(String.valueOf(shareUserId), dateStart, dateEnd);
+			
+			builder.setView(todoShareView);
+			
+			return builder.create();
+			
+		case DIALOG_OPTION_SCHEDULE:
+			builder.setTitle(R.string.select_day);
+			builder.setItems(R.array.dayofweeks_array, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					shareDayName = which + 1;
+					final String QRText = QREncodeUtil.convertSchedule2QRText(MainActivity.sUserId, shareDayName == 8 ? -1 : shareDayName);
+					QREncodeUtil.textEncode(HomeActivity.this, QRText);
+				}
+			});
 			return builder.create();
 			
 		case DIALOG_OPTION_TODO:
@@ -268,6 +300,7 @@ public class HomeActivity extends Activity {
 			}
 		}
 	};
+	private int shareUserId;
 	
 	class ListScheduleTask extends AsyncTask<Integer, Void, String> {
 
@@ -297,9 +330,39 @@ public class HomeActivity extends Activity {
 			}
 		}
 		
+	}
+	
+	class ListTodoTask extends AsyncTask<String, Void, String> {
+
+		private View loading;
+		private View list;
+		private TodoShareAdapter adapter;
 		
+		public ListTodoTask(TodoShareAdapter adapter, View loading, View list) {
+			this.adapter = adapter;
+			this.loading = loading;
+			this.list = list;
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			final int userId = Integer.parseInt(params[0]);
+			final String dateStart = params[1];
+			final String dateEnd = params[2];
+			return WebservicesUtils.getQRTodo(userId, dateStart, dateEnd);
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (!TextUtils.isEmpty(result)) {
+				adapter.setListTodo(XMLUtils.getTodo(result));
+				loading.setVisibility(View.GONE);
+				list.setVisibility(View.VISIBLE);
+			}
+		}
 		
 	}
+	
 	class InformTask extends AsyncTask<Void, Void, String> {
 
 		private String mTitle;
@@ -331,12 +394,17 @@ public class HomeActivity extends Activity {
 				String qrtext = data.getStringExtra("SCAN_RESULT");
 				// Handle successful scan
 				Log.d(tag, "qrtext: " + qrtext);
-				final int userId = QREncodeUtil.getUserIdFromQRText(qrtext);
-				final String table = QREncodeUtil.getTableFromQRText(qrtext);
-				final String dateStart = QREncodeUtil.getDateStartFromQRText(qrtext);
-				final String dateEnd = QREncodeUtil.getDateEndFromQRText(qrtext);
+				final String type = QREncodeUtil.getTypeFromQRText(qrtext);
+				shareUserId = QREncodeUtil.getUserIdFromQRText(qrtext);
+				if (type.equals(QREncodeUtil.TODO)) {
+					dateStart = QREncodeUtil.getDateStartFromQRText(qrtext);
+					dateEnd = QREncodeUtil.getDateEndFromQRText(qrtext);
+					showDialog(DIALOG_TODO_SHARE);
+				} else {
+					shareDayName = QREncodeUtil.getDayNameFromQRText(qrtext);
+					showDialog(DIALOG_SCHEDULE_SHARE);
+				}
 				
-				final String result = WebservicesUtils.getTodoShare(userId, table, dateStart, dateEnd);
 			} else if (resultCode == RESULT_CANCELED) {
 				// Handle cancel
 			}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <string name="system">Hệ Thống</string>
     <string name="e_secrectary">Thư Ký Điện Tử</string>
@@ -39,6 +39,7 @@
     <string name="share_location">Chia Sẻ Vị Trí</string>
     <string name="repeat">Lặp Lại</string>
     <string name="inform">Thông Báo</string>
+    <string name="select_day">Chọn Ngày</string>
     <string name="search">Tra Cứu</string>
     <string name="dayofweek">Thứ</string>
     <string name="monday">Thứ Hai</string>
@@ -136,6 +137,7 @@
         <item name="thursday">Thứ Năm</item>
         <item name="friday">Thứ Sáu</item>
         <item name="saturday">Thứ Bảy</item>
+        <item name="all_dayofweek">Tất Cả</item>
     </string-array>
 
 </resources>

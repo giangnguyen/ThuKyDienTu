@@ -52,7 +52,7 @@ public class WebservicesUtils {
 	private static final String SYNC_METHOD = "sync_web_service";
 	private static final String SHARE_LOCATION_METHOD = "addLatitude";
 	private static final String ADD_NOTICE_METHOD = "addNotice";
-	private static final String GET_TODO_SHARE_METHOD = "getQRInfo";
+	private static final String GET_TODO_SHARE_METHOD = "getQRTodo";
 	private static final String GET_SCHEDULE_SHARE_METHOD = "getQRSchedule";
 
 	// action
@@ -422,12 +422,10 @@ public class WebservicesUtils {
 		return callWebServices(ADD_NOTICE_ACTION, request);
 	}
 	
-	public static String getTodoShare(int userId, String table, String dateStart,
-			String dateEnd) {
+	public static String getQRTodo(int userId, String dateStart, String dateEnd) {
 		// make request
 		SoapObject request = new SoapObject(NAMESPACE, GET_TODO_SHARE_METHOD);
 		request.addProperty(IConstants.TodoShare.USER_ID, userId);
-		request.addProperty(IConstants.TodoShare.TABLE, table);
 		request.addProperty(IConstants.TodoShare.DATE_START, dateStart);
 		request.addProperty(IConstants.TodoShare.DATE_END, dateEnd);
 

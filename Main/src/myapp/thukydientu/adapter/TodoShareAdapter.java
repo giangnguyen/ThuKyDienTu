@@ -27,9 +27,8 @@ public class TodoShareAdapter extends BaseAdapter {
 	
 	private Context mContext;
 	
-	public TodoShareAdapter(Context context, List<Todo> listTodo) {
+	public TodoShareAdapter(Context context) {
 		mContext = context;
-		mListTodoShare = listTodo;
 	}
 	
 	public ViewHolder getViewHolder(View view) {
@@ -65,7 +64,7 @@ public class TodoShareAdapter extends BaseAdapter {
 		final long endTime = Long.parseLong(todo.getDateEnd());
 		holder.end.setText(TimeUtils.getTimeLable(mContext, endTime) + " " + TimeUtils.getDateLable(mContext, endTime));
 	}
-	
+
 	public View newView() {
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		View view = inflater.inflate(R.layout.todo_item, null);
@@ -101,4 +100,8 @@ public class TodoShareAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	public void setListTodo(List<Todo> list) {
+		this.mListTodoShare = list;
+		notifyDataSetChanged();
+	}
 }
