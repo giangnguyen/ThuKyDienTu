@@ -38,8 +38,7 @@ public class TodoListActivity extends ListActivity {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		case 0: {
-			Intent todoAdd = new Intent(
-					"myapp.thukygiangvien.TODO_ADD_ACTIVITY");
+			Intent todoAdd = new Intent("myapp.thukygiangvien.TODO_ADD_ACTIVITY");
 			startActivity(todoAdd);
 			break;
 		}

@@ -48,19 +48,20 @@ public class SyncService extends Service {
 
 		@Override
 		protected void onPreExecute() {
-			mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_STARTED));
+			mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.SYNC_ACTION_STARTED));
 		}
 		
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (result == Activity.RESULT_OK) {
-				mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_FINISHED));
+				mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.SYNC_ACTION_FINISHED));
+				stopSelf();
 			}
 		}
 		
 		@Override
         protected void onCancelled(){
-            mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.DOWNLOAD_ACTION_CANCELLED));
+            mLocalBroadcastManager.sendBroadcast(new Intent(IConstants.Service.SYNC_ACTION_CANCELLED));
         }
 	}
 }

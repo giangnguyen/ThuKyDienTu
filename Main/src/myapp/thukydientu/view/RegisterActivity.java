@@ -18,11 +18,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class RegisterActivity extends Activity {
 
@@ -35,8 +39,7 @@ public class RegisterActivity extends Activity {
 	EditText mDayOfBirth;
 	RadioButton mMale;
 	RadioButton mFemale;
-	EditText mJob;
-	EditText mWorkplace;
+	Spinner mFaculty;
 	Button mRegister;
 
 	private final int DATE_DIALOG_ID = 1;
@@ -53,6 +56,7 @@ public class RegisterActivity extends Activity {
 	private int mYear;
 	private int mMonth;
 	private int mDay;
+	protected int falcuty;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +72,7 @@ public class RegisterActivity extends Activity {
 		mDayOfBirth = (EditText) findViewById(R.id.dayofbirth);
 		mMale = (RadioButton) findViewById(R.id.gender_male);
 		mFemale = (RadioButton) findViewById(R.id.gender_female);
-		mJob = (EditText) findViewById(R.id.job);
-		mWorkplace = (EditText) findViewById(R.id.workplace);
+		mFaculty = (Spinner) findViewById(R.id.faculty_spinner);
 		mRegister = (Button) findViewById(R.id.register);
 		
 		mRegister.setOnClickListener(registerClicked);
@@ -90,6 +93,24 @@ public class RegisterActivity extends Activity {
 			}
 		});
 		
+		falcuty = 1;
+	    ArrayAdapter<CharSequence> lessonAdapter = ArrayAdapter.createFromResource(
+	            this, R.array.lessons, android.R.layout.simple_spinner_item);
+	    lessonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    mFaculty.setAdapter(lessonAdapter);
+	    mFaculty.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+				falcuty = position + 1;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+		});
+	    
 		final Calendar c = Calendar.getInstance();
 		mDay = c.get(Calendar.DAY_OF_MONTH);
 		mMonth = c.get(Calendar.MONTH);
@@ -118,9 +139,7 @@ public class RegisterActivity extends Activity {
 				&& !TextUtils.isEmpty(mEmail.getText().toString())
 				&& !TextUtils.isEmpty(mPhoneNumber.getText().toString())
 				&& !TextUtils.isEmpty(mAddress.getText().toString())
-				&& !TextUtils.isEmpty(mDayOfBirth.getText().toString())
-				&& !TextUtils.isEmpty(mJob.getText().toString())
-				&& !TextUtils.isEmpty(mWorkplace.getText().toString());
+				&& !TextUtils.isEmpty(mDayOfBirth.getText().toString());
 	}
 	// the callback received when the user "sets" the date in the dialog
 	private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -256,8 +275,8 @@ public class RegisterActivity extends Activity {
 					mAddress.getText().toString(), 
 					new StringBuilder().append(mYear).append(mMonth).append(mDay).toString(), 
 					mMale.isChecked() ? 1 : 0, 
-					mWorkplace.getText().toString(), 
-					mJob.getText().toString());
+					1, 
+					falcuty);
 			if (xmlResult != null) {
 				if (XMLUtils.getRegisterResult(xmlResult) == 0) {
 					return RESULT_FAIL_USERNAME;

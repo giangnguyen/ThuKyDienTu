@@ -20,8 +20,7 @@
     <string name="address">Địa chỉ</string>
     <string name="dayofbirth">Ngày sinh</string>
     <string name="gender">Giới tính</string>
-    <string name="workplace">Cơ quan</string>
-    <string name="job">Nghề nhiệp</string>
+    <string name="faculty">Khoa</string>
     <string name="male">Nam</string>
     <string name="female">Nữ</string>
     <string name="add">Thêm</string>
@@ -115,6 +114,14 @@
         <item>120</item>
     </string-array>
 
+    <string-array name="facultys">
+        <item>Mạng máy tính & Truyền thông</item>
+        <item>Hệ thống thông tin</item>
+        <item>Khoa học máy tính</item>
+        <item>Kỹ thuật máy tính</item>
+        <item>Công nghệ phần mềm</item>
+    </string-array>
+    
     <!-- sync -->
     <string name="success">Thành Công!</string>
     <string name="failed">Thất Bại!</string>

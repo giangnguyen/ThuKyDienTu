@@ -102,6 +102,9 @@ public interface IConstants {
 		public static final String DOWNLOAD_ACTION_STARTED = "myapp.thukygiangvien.DOWNLOAD_ACTION_STARTED";
 		public static final String DOWNLOAD_ACTION_FINISHED = "myapp.thukygiangvien.DOWNLOAD_ACTION_FINISHED";
 		public static final String DOWNLOAD_ACTION_CANCELLED = "myapp.thukygiangvien.DOWNLOAD_ACTION_CANCELED";
+		public static final String SYNC_ACTION_STARTED = "myapp.thukygiangvien.SYNC_ACTION_STARTED";
+		public static final String SYNC_ACTION_FINISHED = "myapp.thukygiangvien.SYNC_ACTION_FINISHED";
+		public static final String SYNC_ACTION_CANCELLED = "myapp.thukygiangvien.SYNC_ACTION_CANCELLED";
 	}
 	
 	class DataType {

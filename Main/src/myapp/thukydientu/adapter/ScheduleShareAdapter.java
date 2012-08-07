@@ -166,7 +166,7 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		if (convertView == null)
-			getChildHolder(convertView);
+			convertView = newChildView();
 		
 		bindChildView(convertView, (Schedule) getChild(groupPosition, childPosition));
 		return convertView;

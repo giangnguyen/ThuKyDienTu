@@ -118,6 +118,80 @@
                     android:hint="@string/fullname"
                     android:singleLine="true" />
             </LinearLayout>
+            
+            <!-- date of birth -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:text="@string/dayofbirth"
+                    android:textColor="@color/text_title"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/dayofbirth"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:background="@drawable/edit_bg"
+                    android:hint="@string/dayofbirth"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <!-- gender -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:text="@string/gender"
+                    android:textColor="@color/text_title"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/gender_male"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/male"
+                        android:textColor="@color/text_title"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/gender_female"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/female"
+                        android:textColor="@color/text_title"
+                        android:textStyle="bold" />
+                </RadioGroup>
+            </LinearLayout>
 
             <!-- e-mail -->
 
@@ -203,7 +277,7 @@
                     android:singleLine="true" />
             </LinearLayout>
 
-            <!-- date of birth -->
+            <!-- faculty -->
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -211,127 +285,24 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp" >
+                android:paddingRight="5dp"  >
 
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="@string/dayofbirth"
+                    android:text="@string/faculty"
                     android:textColor="@color/text_title"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/dayofbirth"
+                <Spinner
+                    android:id="@+id/faculty_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:background="@drawable/edit_bg"
-                    android:hint="@string/dayofbirth"
-                    android:singleLine="true" />
+                    android:prompt="@string/faculty" />
             </LinearLayout>
 
-            <!-- gender -->
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:text="@string/gender"
-                    android:textColor="@color/text_title"
-                    android:textStyle="bold" />
-
-                <RadioGroup
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal" >
-
-                    <RadioButton
-                        android:id="@+id/gender_male"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="@string/male"
-                        android:textColor="@color/text_title"
-                        android:textStyle="bold" />
-
-                    <RadioButton
-                        android:id="@+id/gender_female"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/female"
-                        android:textColor="@color/text_title"
-                        android:textStyle="bold" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <!-- job -->
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" >
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:text="@string/job"
-                    android:textColor="@color/text_title"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/job"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:background="@drawable/edit_bg"
-                    android:hint="@string/job"
-                    android:singleLine="true" />
-            </LinearLayout>
-
-            <!-- workplace -->
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" >
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:text="@string/workplace"
-                    android:textColor="@color/text_title"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/workplace"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:background="@drawable/edit_bg"
-                    android:hint="@string/workplace"
-                    android:singleLine="true" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

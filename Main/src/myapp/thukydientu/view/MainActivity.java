@@ -7,6 +7,7 @@ import myapp.thukydientu.R;
 import myapp.thukydientu.controller.HintTimeManager;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.TimeDuration;
+import myapp.thukydientu.util.AndroidUtil;
 import myapp.thukydientu.util.FileUtils;
 import myapp.thukydientu.util.TimeUtils;
 import android.app.AlertDialog;
@@ -68,15 +69,20 @@ public class MainActivity extends TabActivity {
         filter.addAction(IConstants.Service.DOWNLOAD_ACTION_STARTED);
         filter.addAction(IConstants.Service.DOWNLOAD_ACTION_FINISHED);
         filter.addAction(IConstants.Service.DOWNLOAD_ACTION_CANCELLED);
+        filter.addAction(IConstants.Service.SYNC_ACTION_STARTED);
+        filter.addAction(IConstants.Service.SYNC_ACTION_FINISHED);
+        filter.addAction(IConstants.Service.SYNC_ACTION_CANCELLED);
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, Intent intent) {
             	if(intent.getAction().equals(IConstants.Service.DOWNLOAD_ACTION_STARTED)){
             		Toast.makeText(context, "Download started!", Toast.LENGTH_SHORT).show();
+            		AndroidUtil.log("OnReceive", "Download started!");
             	}
+            	
             	if(intent.getAction().equals(IConstants.Service.DOWNLOAD_ACTION_FINISHED)){
             		Toast.makeText(context, "Download finished!", Toast.LENGTH_SHORT).show();
-            		Log.d("status","Download finished");           		
+            		AndroidUtil.log("OnReceive", "Download Finished!");           		
             		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             		builder.setTitle("Thành Công!")
             				.setMessage("Đã tải thành công tài liệu: " + sFilePath)
@@ -89,9 +95,25 @@ public class MainActivity extends TabActivity {
 							.create()
 							.show();
             	}
+            	
             	if(intent.getAction().equals(IConstants.Service.DOWNLOAD_ACTION_CANCELLED)){
             		Toast.makeText(context, "Download cancelled!", Toast.LENGTH_SHORT).show();
-            		Log.d("status","Download cancelled");           		
+            		AndroidUtil.log("OnReceive", "Download canceled!");          		
+            	}
+            	
+            	if(intent.getAction().equals(IConstants.Service.SYNC_ACTION_STARTED)){
+            		Toast.makeText(context, "Bắt đầu đồng bộ!", Toast.LENGTH_SHORT).show();
+            		AndroidUtil.log("OnReceive", "Sync Started!");        		
+            	}
+            	
+            	if(intent.getAction().equals(IConstants.Service.SYNC_ACTION_FINISHED)){
+            		Toast.makeText(context, "Hoàn Thành Đồng Bộ!", Toast.LENGTH_SHORT).show();
+            		AndroidUtil.log("OnReceive", "Sync Finished!");        		
+            	}
+            	
+            	if(intent.getAction().equals(IConstants.Service.SYNC_ACTION_CANCELLED)){
+            		Toast.makeText(context, "Đồng Bộ Thất Bại!", Toast.LENGTH_SHORT).show();
+            		AndroidUtil.log("OnReceive", "Sync Canceled!");          		
             	}
             }
         };

@@ -85,7 +85,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/edit_bg"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal" 
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/key_word"
