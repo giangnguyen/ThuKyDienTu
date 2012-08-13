@@ -302,14 +302,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     return true;
   }
 
-  // Don't display the share menu item if the result overlay is showing.
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    super.onPrepareOptionsMenu(menu);
-    menu.findItem(SHARE_ID).setVisible(lastResult == null);
-    return true;
-  }
-
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -342,7 +334,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         int itemNumber = intent.getIntExtra(Intents.History.ITEM_NUMBER, -1);
         if (itemNumber >= 0) {
           HistoryItem historyItem = historyManager.buildHistoryItem(itemNumber);
-          decodeOrStoreSavedBitmap(null, historyItem.getResult());
+          Result rawResult = historyItem.getResult();
+          ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
+          source = IntentSource.PRODUCT_SEARCH_LINK;
+          handleDecode(rawResult, null);
+//       	  handleDecodeExternally(rawResult, resultHandler, null);
+//          handleDecode(historyItem.getResult(), null);
+//          decodeOrStoreSavedBitmap(null, historyItem.getResult());
         }
       }
     }

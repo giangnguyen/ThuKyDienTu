@@ -108,7 +108,8 @@ public class TimeUtils {
 		cal.set(Calendar.HOUR_OF_DAY, getHour(time));
 		cal.set(Calendar.MINUTE, getMinute(time));
 		cal.set(Calendar.SECOND, getSecond(time));
-		return cal.getTimeInMillis();
+		final long temp = cal.getTimeInMillis() / 1000;
+		return temp * 1000;
 	}
 	public static int getMonth(String time) throws IndexOutOfBoundsException {
 		return Integer.parseInt(time.substring(4, 6));

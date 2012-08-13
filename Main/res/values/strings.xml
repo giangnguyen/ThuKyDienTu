@@ -114,12 +114,15 @@
         <item>120</item>
     </string-array>
 
-    <string-array name="facultys">
-        <item>Mạng máy tính & Truyền thông</item>
+    <string-array name="faculty_names">
+        <item>Mạng máy tính &amp; Truyền thông</item>
         <item>Hệ thống thông tin</item>
         <item>Khoa học máy tính</item>
         <item>Kỹ thuật máy tính</item>
         <item>Công nghệ phần mềm</item>
+    </string-array>
+    <string-array name="school_names">
+        <item>Đại Học Công Nghệ Thông Tin</item>
     </string-array>
     
     <!-- sync -->

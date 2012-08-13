@@ -5,6 +5,7 @@ import java.util.Calendar;
 import myapp.thukydientu.R;
 import myapp.thukydientu.adapter.ScheduleShareAdapter;
 import myapp.thukydientu.adapter.TodoShareAdapter;
+import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.service.ShareLocationService;
 import myapp.thukydientu.util.QREncodeUtil;
 import myapp.thukydientu.util.TimeUtils;
@@ -17,11 +18,14 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -171,6 +175,7 @@ public class HomeActivity extends Activity {
 			final View optionLocationView = getLayoutInflater().inflate(R.layout.location_option_dialog, null);
 			final CheckBox repeat = (CheckBox) optionLocationView.findViewById(R.id.repeat);
 			final EditText minuteView = (EditText) optionLocationView.findViewById(R.id.minute);
+			minuteView.setText("5");
 
 			repeat.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
@@ -412,4 +417,29 @@ public class HomeActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		menu.add(0, 0, 0, "Đăng Xuất").setIcon(android.R.drawable.ic_menu_more);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case 0:
+			SharedPreferences prefs = getSharedPreferences(
+					IConstants.PREF_NAME, MODE_PRIVATE);
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putBoolean(IConstants.LOGON_STATUS, false);
+			editor.commit();
+			startActivity(new Intent(getBaseContext(), LogonActivity.class));
+			finish();
+			break;
+		}
+		return true;
+
+	}
 }

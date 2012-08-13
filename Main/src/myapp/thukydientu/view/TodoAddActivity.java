@@ -19,6 +19,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -144,11 +145,14 @@ public class TodoAddActivity extends Activity {
 					mTodo.setAlarm(mAlarm.isChecked() ?  1: 0);
 					
 					if (!Flag_Add) {
-						TodoUtils.delete(TodoAddActivity.this, mBundle.getLong(IConstants._ID));
+						mTodo.setId(mBundle.getLong(IConstants._ID));
+						TodoUtils.delete(TodoAddActivity.this, mTodo);
 					}
 					mTodo.setChanged(1);
 					mTodo.setDeleted(0);
 					TodoUtils.insert(TodoAddActivity.this, mTodo);
+					long id = TodoUtils.getEventIdByTodo(TodoAddActivity.this, mTodo);
+					Log.d("TodoAddActivity", "eventId: " + id);
 					finish();
 				}
 			}
@@ -231,7 +235,8 @@ public class TodoAddActivity extends Activity {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
 									long Id = TodoUtils.getId(TodoAddActivity.this, mTodo.getDateStart(), mTodo.getTimeFrom(), mTodo.getTimeUntil());
-									TodoUtils.update(TodoAddActivity.this, mTodo, Id);
+									mTodo.setId(Id);
+									TodoUtils.update(TodoAddActivity.this, mTodo);
 								}
 							})
 					.setNegativeButton("Hủy",

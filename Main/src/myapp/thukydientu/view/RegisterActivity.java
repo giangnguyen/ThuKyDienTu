@@ -40,6 +40,7 @@ public class RegisterActivity extends Activity {
 	RadioButton mMale;
 	RadioButton mFemale;
 	Spinner mFaculty;
+	Spinner mSchool;
 	Button mRegister;
 
 	private final int DATE_DIALOG_ID = 1;
@@ -48,15 +49,18 @@ public class RegisterActivity extends Activity {
 	private final int DUPLICATED_EMAIL_DIALOG_ID = 4;
 	private final int SUCCESS_DIALOG_ID = 5;
 	private final int CONNECTION_FAIL_DIALOG = 6;
-	private final String RESULT_FAIL_EMAIL = "DUPLICATED EMAIL";
-	private final String RESULT_FAIL_USERNAME = "DUPLICATED USERNAME";
+	private final int REGISTER_ERROR_DIALOG_ID = 7;
+	private final String RESULT_FAIL_EMAIL = "DUPLICATED_EMAIL";
+	private final String RESULT_FAIL_USERNAME = "DUPLICATED_USERNAME";
+	private final String RESULT_FAIL_ERROR = "RESULT_FAIL_ERROR";
 	private final String RESULT_SUCCESS = "SUCCESS";
 	
 	private ProgressDialog mLoading;
 	private int mYear;
 	private int mMonth;
 	private int mDay;
-	protected int falcuty;
+	protected int falcuty_id;
+	private int school_id;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public class RegisterActivity extends Activity {
 		mMale = (RadioButton) findViewById(R.id.gender_male);
 		mFemale = (RadioButton) findViewById(R.id.gender_female);
 		mFaculty = (Spinner) findViewById(R.id.faculty_spinner);
+		mSchool = (Spinner) findViewById(R.id.school_spinner);
 		mRegister = (Button) findViewById(R.id.register);
 		
 		mRegister.setOnClickListener(registerClicked);
@@ -93,16 +98,34 @@ public class RegisterActivity extends Activity {
 			}
 		});
 		
-		falcuty = 1;
-	    ArrayAdapter<CharSequence> lessonAdapter = ArrayAdapter.createFromResource(
-	            this, R.array.lessons, android.R.layout.simple_spinner_item);
-	    lessonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	    mFaculty.setAdapter(lessonAdapter);
+		falcuty_id = 1;
+	    ArrayAdapter<CharSequence> facultyAdapter = ArrayAdapter.createFromResource(
+	            this, R.array.faculty_names, android.R.layout.simple_spinner_item);
+	    facultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    mFaculty.setAdapter(facultyAdapter);
 	    mFaculty.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-				falcuty = position + 1;
+				falcuty_id = position + 1;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+		});
+	    
+	    school_id = 1;
+	    ArrayAdapter<CharSequence> schoolAdapter = ArrayAdapter.createFromResource(
+	            this, R.array.school_names, android.R.layout.simple_spinner_item);
+	    schoolAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    mSchool.setAdapter(schoolAdapter);
+	    mSchool.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+				school_id = position + 1;
 			}
 
 			@Override
@@ -164,9 +187,26 @@ public class RegisterActivity extends Activity {
 	    case INPUT_ERROR_DIALOG_ID: 
 	    {
 	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Thông tin nhập rỗng!")
+	    	builder.setTitle("Thông tin nhập rỗng!")
+	    	.setMessage(
+	    			"Thông tin không được bỏ trống!\nBạn vui lòng nhập lại.")
+	    			.setNeutralButton("Chấp nhận",
+	    					new DialogInterface.OnClickListener() {
+	    				
+	    				@Override
+	    				public void onClick(DialogInterface dialog,
+	    						int which) {
+	    					
+	    				}
+	    			});
+	    	return builder.create();
+	    }
+	    case REGISTER_ERROR_DIALOG_ID: 
+	    {
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Đăng ký thất bại!")
 					.setMessage(
-							"Thông tin không được bỏ trống!\nBạn vui lòng nhập lại.")
+							"Lỗi trong quá trình đăng ký!\nVui lòng thử lại sau.")
 					.setNeutralButton("Chấp nhận",
 							new DialogInterface.OnClickListener() {
 
@@ -275,13 +315,15 @@ public class RegisterActivity extends Activity {
 					mAddress.getText().toString(), 
 					new StringBuilder().append(mYear).append(mMonth).append(mDay).toString(), 
 					mMale.isChecked() ? 1 : 0, 
-					1, 
-					falcuty);
+					school_id, 
+					falcuty_id);
 			if (xmlResult != null) {
 				if (XMLUtils.getRegisterResult(xmlResult) == 0) {
 					return RESULT_FAIL_USERNAME;
 				} else if (XMLUtils.getRegisterResult(xmlResult) == -1) 
 					return RESULT_FAIL_EMAIL;
+				else if (XMLUtils.getRegisterResult(xmlResult) == -2) 
+					return RESULT_FAIL_ERROR;
 			}
 			return RESULT_SUCCESS;
 		}
@@ -289,10 +331,12 @@ public class RegisterActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			setLoading(RegisterActivity.this, false);
-			if (result == RESULT_FAIL_EMAIL)
+			if (result.equals(RESULT_FAIL_EMAIL))
 				showDialog(DUPLICATED_EMAIL_DIALOG_ID);
-			else if (result == RESULT_FAIL_USERNAME)
+			else if (result.equals(RESULT_FAIL_USERNAME))
 				showDialog(DUPLICATED_USERNAME_DIALOG_ID);
+			else if (result.equals(RESULT_FAIL_ERROR))
+				showDialog(REGISTER_ERROR_DIALOG_ID);
 			else {
 				Toast.makeText(RegisterActivity.this, "Đăng Ký Thành Công!", Toast.LENGTH_LONG).show();
 				finish();

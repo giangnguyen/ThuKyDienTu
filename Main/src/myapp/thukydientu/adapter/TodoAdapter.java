@@ -1,8 +1,10 @@
 package myapp.thukydientu.adapter;
 
 import myapp.thukydientu.R;
+import myapp.thukydientu.database.TodoTable;
 import myapp.thukydientu.model.IConstants;
-import myapp.thukydientu.model.IConstants.event;
+import myapp.thukydientu.model.Todo;
+import myapp.thukydientu.provider.TKDTProvider;
 import myapp.thukydientu.util.TimeUtils;
 import myapp.thukydientu.util.TodoUtils;
 import myapp.thukydientu.view.TodoAddActivity;
@@ -55,14 +57,22 @@ public class TodoAdapter extends CursorAdapter {
 		mContext = context;
 		
 		QueryHandler queryHandler = new QueryHandler(context, this);
+//		queryHandler.startQuery(
+//				userId, 
+//				null, 
+//				event.CONTENT_URI, 
+//				event.PROJECTION, 
+//				event.CALENDAR_ID + "=" + event.CALENDAR, 
+//				null, 
+//				event.DATE_START + " ASC");
 		queryHandler.startQuery(
 				userId, 
 				null, 
-				event.CONTENT_URI, 
-				event.PROJECTION, 
-				event.CALENDAR_ID + "=" + event.CALENDAR, 
+				TKDTProvider.TODO_CONTENT_URI, 
+				TodoTable.PROJECTION, 
 				null, 
-				event.DATE_START + " ASC");
+				null, 
+				TodoTable.DATE_START + " ASC");
 	}
 	
 	public ViewHolder getViewHolder(View view) {
@@ -84,9 +94,11 @@ public class TodoAdapter extends CursorAdapter {
 	public void bindView(View view, final Context context, Cursor cursor) {
 		ViewHolder holder = (ViewHolder) view.getTag();
 		
-		final long eventId = cursor.getLong(event.ID_COLUMN_INDEX);
+		final Todo todo = new Todo();
+		TodoUtils.bindTodoData(todo, cursor);
 		
-		final long startTime = cursor.getLong(event.DATE_START_COLUMN_INDEX);
+		final long startTime = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
+		
 		final long currentTime = System.currentTimeMillis();
 		if (startTime < currentTime)
 			view.setBackgroundResource(R.drawable.list_item_out_of_date);
@@ -96,10 +108,11 @@ public class TodoAdapter extends CursorAdapter {
 		holder.date.setText(TimeUtils.getDateLable(mContext, startTime));
 		holder.time.setText(TimeUtils.getTimeLable(mContext, startTime));
 
-		holder.event.setText(cursor.getString(event.TITLE_COLUMN_INDEX));
-		holder.description.setText(cursor.getString(event.DESCRIPTION_COLUMN_INDEX));
+		holder.event.setText(todo.getTitle());
+		holder.description.setText(todo.getWork());
 		
-		final long endTime = cursor.getLong(event.DATE_END_COLUMN_INDEX);
+		final long endTime = TimeUtils.toTimeInMilisecond(todo.getDateEnd(), todo.getTimeUntil());
+		
 		holder.end.setText(TimeUtils.getTimeLable(mContext, endTime) + " " + TimeUtils.getDateLable(mContext, endTime));
 		
 		holder.edit.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +120,7 @@ public class TodoAdapter extends CursorAdapter {
 			public void onClick(View v) {
 				Intent addTodoIntent = new Intent(mContext, TodoAddActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putLong(IConstants._ID, eventId);
+				bundle.putLong(IConstants._ID, todo.getId());
 				addTodoIntent.putExtras(bundle);
 				((Activity) mContext).startActivityForResult(addTodoIntent, 1);
 			}
@@ -125,7 +138,7 @@ public class TodoAdapter extends CursorAdapter {
 					.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							TodoUtils.delete((Activity) context, eventId);
+							TodoUtils.delete((Activity) context, todo);
 						}
 					})
 					.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {

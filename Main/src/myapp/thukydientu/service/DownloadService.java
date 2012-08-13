@@ -13,7 +13,6 @@ import java.net.URL;
 import myapp.thukydientu.R;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.MyFile;
-import myapp.thukydientu.view.MainActivity;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -168,15 +167,14 @@ public class DownloadService extends Service {
 		@Override
 		protected void onPostExecute(Integer result) {
 			
-			if (result == IConstants.Results.RESULT_OK) {
-				File from = new File(SAVE_DIR, mFileName + INCOMPLETED);
-				File to = new File(SAVE_DIR, mFileName);
-				from.renameTo(to);
-				MainActivity.sFilePath = to.getPath();
-			}
+			File from = new File(SAVE_DIR, mFileName + INCOMPLETED);
+			File to = new File(SAVE_DIR, mFileName);
+			from.renameTo(to);
+			Intent intent = new Intent(IConstants.Service.DOWNLOAD_ACTION_FINISHED);
+			intent.putExtra(IConstants.Service.DOWNLOADED_FILE_PATH, to.getPath());
+			
 			mProgressBar.setVisibility(View.GONE);
-			mLocalBroadcastManager.sendBroadcast(new Intent(
-					IConstants.Service.DOWNLOAD_ACTION_FINISHED));
+			mLocalBroadcastManager.sendBroadcast(intent);
 			
 			stopSelf();
 		}

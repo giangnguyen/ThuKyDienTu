@@ -47,8 +47,8 @@ public interface IConstants {
 		public static final String ADDRESS 			= "address";
 		public static final String DATE_OF_BIRTH 	= "datebirth";
 		public static final String GENDER 			= "gender";
-		public static final String WORKPLACE 		= "workplace";
-		public static final String JOB 				= "job";
+		public static final String SCHOOL_ID 		= "id_school";
+		public static final String FACULTY_ID		= "id_faculty";
 	}
 	
 	class event {
@@ -105,6 +105,7 @@ public interface IConstants {
 		public static final String SYNC_ACTION_STARTED = "myapp.thukygiangvien.SYNC_ACTION_STARTED";
 		public static final String SYNC_ACTION_FINISHED = "myapp.thukygiangvien.SYNC_ACTION_FINISHED";
 		public static final String SYNC_ACTION_CANCELLED = "myapp.thukygiangvien.SYNC_ACTION_CANCELLED";
+		public static final String DOWNLOADED_FILE_PATH = "download_file_path";
 	}
 	
 	class DataType {
@@ -129,7 +130,6 @@ public interface IConstants {
 	
 	class TodoShare {
 		public static final String USER_ID = "userid";
-		public static final String TABLE = "table";
 		public static final String DATE_START = "datestart";
 		public static final String DATE_END = "dateend";
 	}

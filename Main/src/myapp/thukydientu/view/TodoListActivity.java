@@ -43,7 +43,7 @@ public class TodoListActivity extends ListActivity {
 			break;
 		}
 		case 1: {
-			TodoUtils.delete(TodoListActivity.this, -1);
+			TodoUtils.deleteAll(TodoListActivity.this);
 			break;
 		}
 		case 2:

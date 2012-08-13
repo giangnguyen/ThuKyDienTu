@@ -17,6 +17,10 @@ public class Todo {
 	private int changed;
 	private int deleted;
 	
+	public Todo() {
+		Id = -1;
+	}
+	
 	public long getId() {
 		return Id;
 	}

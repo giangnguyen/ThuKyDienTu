@@ -49,11 +49,11 @@ public class TodoUtils {
 		}
 	}
 	
-	public static int update(Activity activity, Todo todo, long Id) {
+	public static int update(Activity activity, Todo todo) {
 		if (todo == null)
 			return FAIL;
 		
-		if (!updateEvent(activity, Id, todo))
+		if (!updateEvent(activity, todo))
 			return FAIL;
 		
 		// initial values to update
@@ -61,13 +61,13 @@ public class TodoUtils {
 			todo.setModified(System.currentTimeMillis());
 		
 		if (TextUtils.isEmpty(todo.getDateSet()))
-			todo.setDateSet(getDateSet(activity, Id));
+			todo.setDateSet(getDateSet(activity, todo.getId()));
 		
 		ContentValues values = createContentValues(todo);
 		
-		Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, Id);
+		Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todo.getId());
 		
-		if (Id == -1) 
+		if (todo.getId() == -1) 
 			uriId = TKDTProvider.TODO_CONTENT_URI;
 		
 		
@@ -95,26 +95,29 @@ public class TodoUtils {
 		return dateSet;
 	}
 	
-	public static int delete(Activity activity, long eventId) {
+	public static void deleteAll(Activity activity) {
+		delete(activity, null);
+	}
+	
+	public static void delete(Activity activity, Todo todo) {
 		
-		final long todoId = getTodoIdByEventId(activity, eventId);
-		
-		final int deleteEvent = deleteEvent(activity, eventId);
-		
-		if (deleteEvent > 0) {
-			ContentValues values = new ContentValues();
-			values.put(TodoTable.CHANGED, 1);
-			values.put(TodoTable.DELETED, 1);
-			values.put(TodoTable.MODIFIED, TimeUtils.convert2String14(System.currentTimeMillis()));
+		if (todo == null) {
+			activity.getContentResolver().delete(TKDTProvider.TODO_CONTENT_URI, null, null);
+			deleteEventById(activity, -1);
+		} else {
+			long eventId = getEventIdByTodo(activity, todo);
+			final int deleteEvent = deleteEventById(activity, eventId);
 			
-			if (todoId == -1) {
-				return activity.getContentResolver().update(TKDTProvider.TODO_CONTENT_URI, values, null, null);
-			}  else {
-				Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todoId);
-				return activity.getContentResolver().update(uriId, values, null, null);
+			if (deleteEvent > 0) {
+				ContentValues values = new ContentValues();
+				values.put(TodoTable.CHANGED, 1);
+				values.put(TodoTable.DELETED, 1);
+				values.put(TodoTable.MODIFIED, TimeUtils.convert2String14(System.currentTimeMillis()));
+				
+				Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todo.getId());
+				activity.getContentResolver().update(uriId, values, null, null);
 			}
 		}
-		return deleteEvent;
 	}
 	
 	private static ContentValues createContentValues(Todo todo) {
@@ -174,6 +177,29 @@ public class TodoUtils {
 		
 		return Id;
 	}
+	
+	public static long getEventIdByTodoId(Activity activity, long todoId) {
+		
+		if (todoId == -1)
+			return -1;
+		
+		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todoId);
+		final Cursor todoCursor = activity.getContentResolver().query(uriId, event.PROJECTION, null, null, null);
+		
+		activity.startManagingCursor(todoCursor);
+		
+		long Id = -1;
+		if (todoCursor.moveToFirst()) {
+			
+			final long startTime = todoCursor.getLong(event.DATE_START_COLUMN_INDEX);
+			final long endTime = todoCursor.getLong(event.DATE_END_COLUMN_INDEX);
+			Id = getId(activity, TimeUtils.getDate(startTime), TimeUtils.getTime(startTime), TimeUtils.getTime(endTime));
+		}
+		closeCursor(todoCursor);
+		
+		return Id;
+	}
+
 	public static boolean checkDeleted(Activity activity, long id) {
 		int deleted = 0;
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, id);
@@ -231,9 +257,8 @@ public class TodoUtils {
 		return true;
 	}
 	
-	private static boolean updateEvent(Activity activity, long id, Todo todo) {
-		ContentResolver cr = activity.getContentResolver();
-
+	private static boolean updateEvent(Activity activity, Todo todo) {
+		
 		ContentValues values = new ContentValues();
 		values.put(IConstants.event.CALENDAR_ID, IConstants.event.CALENDAR);
 		values.put(IConstants.event.TITLE, todo.getTitle());
@@ -243,16 +268,39 @@ public class TodoUtils {
 		values.put(IConstants.event.DATE_START, dtstart);
 		values.put(IConstants.event.DATE_END, dtend);
 		values.put(IConstants.event.HAS_ALARM, todo.getAlarm());
-		Uri updateUri = ContentUris.withAppendedId(IConstants.event.CONTENT_URI, id);
-		if (id == -1)
+		Uri updateUri = ContentUris.withAppendedId(IConstants.event.CONTENT_URI, todo.getId());
+		if (todo.getId() == -1)
 			updateUri = event.CONTENT_URI;
-		int event = cr.update(updateUri, values, null, null);
+		int event = activity.getContentResolver().update(updateUri, values, null, null);
 		if (event < 0)
 			return false;
 		return true;
 	}
 	
-	private static int deleteEvent(Activity activity, long id) {
+	public static long getEventIdByTodo(Activity activity, Todo todo) {
+		long eventId = -1;
+		final long dateStart = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
+		final long dateEnd = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeUntil());
+		final Cursor eventCursor = activity.getContentResolver().query(
+				event.CONTENT_URI, 
+				event.PROJECTION, 
+				event.DATE_START + "=" + dateStart + " AND " + 
+				event.DATE_END + "=" + dateEnd + " AND " + 
+				event.TITLE + "='" + todo.getTitle() + "'" + " AND " + 
+				event.DESCRIPTION + "='" + todo.getWork() + "'", 
+				null, 
+				null);
+		activity.startManagingCursor(eventCursor);
+		
+		if (eventCursor.moveToFirst()) {
+			eventId = eventCursor.getLong(event.ID_COLUMN_INDEX);
+		}
+		closeCursor(eventCursor);
+		
+		return eventId;
+	}
+	
+	private static int deleteEventById(Activity activity, long id) {
 		if (id == -1) {
 			return activity.getContentResolver().delete(IConstants.event.CONTENT_URI, null, null);
 		}
@@ -260,7 +308,8 @@ public class TodoUtils {
 		return activity.getContentResolver().delete(uriId, null, null);
 	}
 	
-	private static void bindTodoData(Todo todo, Cursor cursor) {
+	
+	public static void bindTodoData(Todo todo, Cursor cursor) {
 		todo.setId(cursor.getLong(TodoTable.ID_COLUMN_INDEX));
 		todo.setDateStart(cursor.getString(TodoTable.DATE_START_COLUMN_INDEX));
 		todo.setDateEnd(cursor.getString(TodoTable.DATE_END_COLUMN_INDEX));
@@ -274,6 +323,7 @@ public class TodoUtils {
 		todo.setChanged(cursor.getInt(TodoTable.CHANGED_COLUMN_INDEX));
 		todo.setDeleted(cursor.getInt(TodoTable.DELETED_COLUMN_INDEX));
 	}
+	
 	public static Todo getTodo(Activity activity, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, Id);
 		final Cursor cursor = activity.getContentResolver().query(uriId, TodoTable.PROJECTION, null, null, null);
@@ -349,9 +399,11 @@ public class TodoUtils {
 			Log.d("sync", "sync_app result: " + sync_app);
 			if (sync_app.equals("1")) { 
 				final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todo.getId());
-				if (todo.getDeleted() == 1)
-					activity.getContentResolver().delete(uriId, null, null);
-				else {
+				if (todo.getDeleted() == 1){
+//					TodoUtils.delete(activity, todo.getId());
+					getEventIdByTodo(activity, todo);
+					Log.d("sync", "sync_app result: " + sync_app);
+				}else {
 					ContentValues values = new ContentValues();
 					values.put(TodoTable.CHANGED, 0);
 					activity.getContentResolver().update(uriId, values, null, null);
@@ -362,16 +414,19 @@ public class TodoUtils {
 	
 	public static void syncEachInstance(Activity activity, Todo serverTodo) {
 		final long Id = getId(activity, serverTodo.getDateStart(), serverTodo.getTimeFrom(), serverTodo.getTimeUntil());
+		serverTodo.setId(Id);
+		Log.d("syncEachInstance", "ID: " + Id);
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, Id);
 		if (Id > 0) {
 			Todo localTodo = getTodo(activity, Id);
 			Log.d("syncTodo", "server date modified: " + serverTodo.getModified());
 			if (localTodo.getModified().compareTo(serverTodo.getModified()) < 0) {
-				if (serverTodo.getDeleted() == 1) 
+				if (serverTodo.getDeleted() == 1) { 
 					activity.getContentResolver().delete(uriId, null, null);
-				else {
+					Log.d("syncEachInstance", "deteted:  " + uriId);
+				} else {
 					serverTodo.setChanged(0);
-					update(activity, serverTodo, Id);
+					update(activity, serverTodo);
 				}
 			} 
 		} else {

@@ -7,10 +7,10 @@ import java.io.UnsupportedEncodingException;
 import myapp.thukydientu.database.ScheduleTable;
 import myapp.thukydientu.database.TodoTable;
 import myapp.thukydientu.model.IConstants;
+import myapp.thukydientu.model.IConstants.ShareLocation;
 import myapp.thukydientu.model.MyFile;
 import myapp.thukydientu.model.Schedule;
 import myapp.thukydientu.model.Todo;
-import myapp.thukydientu.model.IConstants.ShareLocation;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -32,6 +32,7 @@ public class WebservicesUtils {
 
 	private static final String NAMESPACE = "http://tempuri.org/";
 	private static final String WEB_SERVICES_URL = "http://kanzenvietnam.co.cc/tester/weservice/server.php";
+//	private static final String WEB_SERVICES_URL = "http://webandroid.somee.com/webservice1.asmx";
 
 	// method
 	private static final String REGISTER_METHOD = "register";
@@ -98,13 +99,12 @@ public class WebservicesUtils {
 		envelope.setOutputSoapObject(request);
 		envelope.encodingStyle = "UTF-8";
 
-		HttpTransportSE androidHttpTransport = new HttpTransportSE(
-				WEB_SERVICES_URL);
+		HttpTransportSE androidHttpTransport = new HttpTransportSE(WEB_SERVICES_URL);
 		androidHttpTransport.debug = true;
 
 		try {
 			androidHttpTransport.call(action, envelope);
-			result = (String) envelope.getResponse();
+			result = envelope.getResponse().toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = "";
@@ -115,7 +115,7 @@ public class WebservicesUtils {
 
 	public static String register(String username, String password,
 			String fullname, String email, String phone, String address,
-			String datebirth, int gender, String workplace, String job) {
+			String datebirth, int gender, int id_school, int id_faculty) {
 
 		// make request
 		SoapObject request = new SoapObject(NAMESPACE, REGISTER_METHOD);
@@ -127,8 +127,8 @@ public class WebservicesUtils {
 		request.addProperty(IConstants.User.ADDRESS, address);
 		request.addProperty(IConstants.User.DATE_OF_BIRTH, datebirth);
 		request.addProperty(IConstants.User.GENDER, gender);
-		request.addProperty(IConstants.User.WORKPLACE, workplace);
-		request.addProperty(IConstants.User.JOB, job);
+		request.addProperty(IConstants.User.SCHOOL_ID, id_school);
+		request.addProperty(IConstants.User.FACULTY_ID, id_faculty);
 
 		return callWebServices(REGISTER_ACTION, request);
 	}
@@ -424,11 +424,13 @@ public class WebservicesUtils {
 	
 	public static String getQRTodo(int userId, String dateStart, String dateEnd) {
 		// make request
+		Log.d("getQRTodo", "userId:" + userId + "dateStart:" + dateStart + "dateEnd:" + dateEnd);
 		SoapObject request = new SoapObject(NAMESPACE, GET_TODO_SHARE_METHOD);
 		request.addProperty(IConstants.TodoShare.USER_ID, userId);
 		request.addProperty(IConstants.TodoShare.DATE_START, dateStart);
 		request.addProperty(IConstants.TodoShare.DATE_END, dateEnd);
-
+		
 		return callWebServices(GET_TODO_SHARE_ACTION, request);
 	}
+	
 }

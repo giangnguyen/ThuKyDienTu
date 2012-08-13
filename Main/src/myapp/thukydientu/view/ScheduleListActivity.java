@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -41,15 +40,11 @@ public class ScheduleListActivity extends ExpandableListActivity {
 
 	private void createMenu(Menu menu) {
 
-		MenuItem signout = menu.add(0, 0, 0, "Đăng Xuất");
-		signout.setIcon(android.R.drawable.ic_menu_more);
-
-		MenuItem addItem = menu.add(0, 1, 1, "Đồng bộ");
+		MenuItem addItem = menu.add(0, 0, 0, "Đồng bộ");
 		addItem.setIcon(R.drawable.sync);
 
-		MenuItem deleteItem = menu.add(0, 2, 2, "Xóa tất cả");
+		MenuItem deleteItem = menu.add(0, 1, 1, "Xóa tất cả");
 		deleteItem.setIcon(R.drawable.ic_menu_clear_list);
-
 	}
 
 	@Override
@@ -57,19 +52,11 @@ public class ScheduleListActivity extends ExpandableListActivity {
 
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-		case 0:
-			SharedPreferences prefs = getSharedPreferences(
-					IConstants.PREF_NAME, MODE_PRIVATE);
-			SharedPreferences.Editor editor = prefs.edit();
-			editor.putBoolean(IConstants.LOGON_STATUS, false);
-			editor.commit();
-			startActivity(new Intent(getBaseContext(), LogonActivity.class));
-			finish();
-		case 1: {
+		case 0: {
 			new SyncService(this, MainActivity.sUserId, IConstants.DataType.SCHEDULE);
 			break;
 		}
-		case 2: {
+		case 1: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setIcon(android.R.drawable.ic_dialog_alert)
 					.setTitle("Xác nhận")

@@ -6,7 +6,9 @@ import java.util.List;
 
 import myapp.thukydientu.R;
 import myapp.thukydientu.model.Schedule;
+import myapp.thukydientu.util.ScheduleUtils;
 import myapp.thukydientu.util.TimeUtils;
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +16,13 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ScheduleShareAdapter extends BaseExpandableListAdapter {
-
+	static final int CONFIRM_DIALOG = 1;
+	static final int INSERT_ERROR_DIALOG = 3;
+	static final int INSERT_SUCCESS_DIALOG = 5;
+	static final int REQUEST_TO_UPDATE = 6;
 	private Context mContext;
 
 	private int[] dayOfWeeks = new int[] {1, 2, 3, 4, 5, 6, 7};
@@ -76,7 +82,7 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 		return holder;
 	}
 
-	protected void bindChildView(View view, Schedule schedule) {
+	protected void bindChildView(View view, final Schedule schedule) {
 
 		ChildHolder holder = (ChildHolder) view.getTag();
 
@@ -88,6 +94,21 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 		cal.set(Calendar.SECOND, 0);
 
 		holder.date.setText(getPeriodOfDay(cal));
+		holder.delete.setBackgroundResource(R.drawable.list_item_add_selector);
+		holder.delete.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final int result = ScheduleUtils.insert((Activity) mContext, schedule);
+				if (result == ScheduleUtils.FAIL)
+					Toast.makeText(mContext, "Thêm thất bại!", Toast.LENGTH_LONG).show();
+				if (result == ScheduleUtils.REQUEST_TO_UPDATE) {
+					final long Id = ScheduleUtils.getId((Activity) mContext, schedule.getDayName(), schedule.getTime());
+					ScheduleUtils.update((Activity) mContext, schedule, Id);
+					Toast.makeText(mContext, "Cập nhật thành công!", Toast.LENGTH_LONG).show();
+				} else 
+					Toast.makeText(mContext, "Thêm thành công", Toast.LENGTH_LONG).show();
+			}
+		});
 		
 		holder.time.setText(TimeUtils.getTimeLable(mContext, cal.getTimeInMillis()));
 		holder.school.setText(schedule.getSchoolName());
