@@ -7,9 +7,9 @@ import java.util.List;
 import myapp.thukydientu.database.ScheduleTable;
 import myapp.thukydientu.model.Schedule;
 import myapp.thukydientu.provider.TKDTProvider;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -21,10 +21,10 @@ public class ScheduleUtils {
 	public static final int SUCCESS = 1;
 	public static final int REQUEST_TO_UPDATE = 2;
 	
-	public static int insert(Activity activity, Schedule schedule) {
-		final long Id = getId(activity, schedule.getDayName(), schedule.getTime());
+	public static int insert(Context context, Schedule schedule) {
+		final long Id = getId(context, schedule.getDayName(), schedule.getTime());
 		
-		if (Id == -1 || checkDeleted(activity, Id)) {
+		if (Id == -1 || checkDeleted(context, Id)) {
 			final long time = System.currentTimeMillis();
 			if (TextUtils.isEmpty(schedule.getDateSet()))
 				schedule.setDateSet(time);
@@ -32,7 +32,7 @@ public class ScheduleUtils {
 				schedule.setModified(time);
 			ContentValues values = createContentValues(schedule);
 			Log.d("insert", "modified: " + values.getAsString(ScheduleTable.MODIFIED));
-			final Uri uri = activity.getContentResolver().insert(TKDTProvider.SCHEDULE_CONTENT_URI, values);
+			final Uri uri = context.getContentResolver().insert(TKDTProvider.SCHEDULE_CONTENT_URI, values);
 			if (uri == null) 
 				return FAIL;
 			else 
@@ -42,18 +42,18 @@ public class ScheduleUtils {
 		}
 	}
 	
-	public static int update(Activity activity, Schedule schedule, long Id) {
+	public static int update(Context context, Schedule schedule, long Id) {
 		if (schedule == null)
 			return FAIL;
 		// initial values to update
 		if (TextUtils.isEmpty(schedule.getModified()))
 			schedule.setModified(System.currentTimeMillis());
-		schedule.setDateSet(getDateSet(activity, Id));
+		schedule.setDateSet(getDateSet(context, Id));
 		final ContentValues values = createContentValues(schedule);
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
 		
 		try {
-			final int result = activity.getContentResolver().update(uriId, values, null, null);
+			final int result = context.getContentResolver().update(uriId, values, null, null);
 			if (result > 0) 
 				return SUCCESS;
 			else 
@@ -63,7 +63,7 @@ public class ScheduleUtils {
 		}
 	}
 	
-	public static int delete(Activity activity, long Id) {
+	public static int delete(Context context, long Id) {
 		final ContentValues values = new ContentValues();
 		values.put(ScheduleTable.DELETED, 1);
 		values.put(ScheduleTable.CHANGED, 1);
@@ -72,15 +72,14 @@ public class ScheduleUtils {
 		if (Id == -1)
 			uriId = TKDTProvider.SCHEDULE_CONTENT_URI;
 		try {
-			return activity.getContentResolver().update(uriId, values, null, null);
+			return context.getContentResolver().update(uriId, values, null, null);
 		} catch (NullPointerException e) {
 			return FAIL;
 		}
 	}
 	
-	public static Cursor getListScheduleByDayOfWeek(Activity activity, int dayOfWeek) {
-		Cursor cursor = activity.getContentResolver().query(TKDTProvider.SCHEDULE_CONTENT_URI, ScheduleTable.PROJECTION, ScheduleTable.DATE_NAME + "=" + dayOfWeek + " AND " + ScheduleTable.DELETED + "=0", null, null);
-		activity.startManagingCursor(cursor);
+	public static Cursor getListScheduleByDayOfWeek(Context context, int dayOfWeek) {
+		Cursor cursor = context.getContentResolver().query(TKDTProvider.SCHEDULE_CONTENT_URI, ScheduleTable.PROJECTION, ScheduleTable.DATE_NAME + "=" + dayOfWeek + " AND " + ScheduleTable.DELETED + "=0", null, null);
 		return cursor;
 	}
 	
@@ -102,17 +101,16 @@ public class ScheduleUtils {
 		return values;
 	}
 	
-	public static long getId(Activity activity, int dateName, String time) {
+	public static long getId(Context context, int dateName, String time) {
 		long Id = -1;
 		Log.d("getId", "dateName: " + dateName + " time: " + time);
-		final Cursor cursor = activity.getContentResolver().query(
+		final Cursor cursor = context.getContentResolver().query(
 				TKDTProvider.SCHEDULE_CONTENT_URI, 
 				ScheduleTable.PROJECTION, 
 				ScheduleTable.DATE_NAME + "=" + dateName + " AND " + 
 				ScheduleTable.TIME + "='" + time + "'", 
 				null, 
 				null);
-		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			do {
 				Id = cursor.getLong(ScheduleTable.ID_COLUMN_INDEX);
@@ -123,16 +121,15 @@ public class ScheduleUtils {
 		return Id;
 	}
 	
-	public static boolean checkDeleted(Activity activity, long id) {
+	public static boolean checkDeleted(Context context, long id) {
 		int deleted = 0;
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, id);
-		final Cursor cursor = activity.getContentResolver().query(
+		final Cursor cursor = context.getContentResolver().query(
 				uriId, 
 				ScheduleTable.PROJECTION, 
 				null, 
 				null, 
 				null);
-		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			do {
 				deleted = cursor.getInt(ScheduleTable.DELETED_COLUMN_INDEX);
@@ -142,14 +139,13 @@ public class ScheduleUtils {
 		return deleted == 0 ? false : true;
 	}
 	
-	public static String getDateSet(Activity activity, long Id) {
+	public static String getDateSet(Context context, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
 		String dateSet = TimeUtils.convert2String14(System.currentTimeMillis());
-		final Cursor cursor = activity.getContentResolver().query(
+		final Cursor cursor = context.getContentResolver().query(
 				uriId, 
 				ScheduleTable.PROJECTION, 
 				null, null, null);
-		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			do {
 				dateSet = cursor.getString(ScheduleTable.DATE_SET_COLUMN_INDEX);
@@ -174,10 +170,9 @@ public class ScheduleUtils {
 		schedule.setLessonDuration(cursor.getInt(ScheduleTable.LESSON_DURATION_COLUMN_INDEX));
 	}
 	
-	public static Schedule getSchedule(Activity activity, long Id) {
+	public static Schedule getSchedule(Context context, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
-		final Cursor cursor = activity.managedQuery(uriId, ScheduleTable.PROJECTION, null, null, null);
-		activity.startManagingCursor(cursor);
+		final Cursor cursor = context.getContentResolver().query(uriId, ScheduleTable.PROJECTION, null, null, null);
 		if (cursor.moveToFirst()) {
 			Schedule schedule = new Schedule();
 			bindScheduleData(schedule, cursor);
@@ -188,16 +183,15 @@ public class ScheduleUtils {
 		return null;
 	}
 	
-	public static List<Schedule> getListScheduleChanged(Activity activity) {
+	public static List<Schedule> getListScheduleChanged(Context context) {
 		List<Schedule> listChanged = new ArrayList<Schedule>();
-		final Cursor cursor = activity.getContentResolver().query(
+		final Cursor cursor = context.getContentResolver().query(
 				TKDTProvider.SCHEDULE_CONTENT_URI, 
 				ScheduleTable.PROJECTION, 
 				ScheduleTable.CHANGED + "=1", 
 				null, 
 				null
 				);
-		activity.startManagingCursor(cursor);
 		if (cursor.moveToFirst()) {
 			do {
 				Schedule schedule = new Schedule();
@@ -209,11 +203,11 @@ public class ScheduleUtils {
 		return listChanged;
 	}
 	
-	public static List<Schedule> getListScheduleByDay(Activity activity, int dayOfMonth) {
+	public static List<Schedule> getListScheduleByDay(Context context, int dayOfMonth) {
 		List<Schedule> listSchedule = new ArrayList<Schedule>();
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-		final Cursor cursor = activity.getContentResolver().query(
+		final Cursor cursor = context.getContentResolver().query(
 				TKDTProvider.SCHEDULE_CONTENT_URI, 
 				ScheduleTable.PROJECTION, 
 				ScheduleTable.DATE_NAME + "=?", 
@@ -235,52 +229,52 @@ public class ScheduleUtils {
 			cursor.close();
 	}
 	
-	public static void sync(int userId, Activity activity) {
+	public static void sync(int userId, Context context) {
 		final String result = WebservicesUtils.sync(userId, ScheduleTable.TABLE_NAME);
 		Log.d("sync Schedule", "result from server: " + result);
 		if (!TextUtils.isEmpty(result)) {
 			List<Schedule> listScheduleChangedFromServer = XMLUtils.getSchedule(result);
 			for (Schedule schedule : listScheduleChangedFromServer) {
-				syncEachInstance(activity, schedule);
+				syncEachInstance(context, schedule);
 			}
 		}
 		
-		List<Schedule> listChanged = getListScheduleChanged(activity);
+		List<Schedule> listChanged = getListScheduleChanged(context);
 		for (Schedule schedule : listChanged) {
 			final String sync_app_Schedule = WebservicesUtils.sync_schedule_app(userId, schedule);
 			Log.d("sync", "sync_app_schedule result: " + sync_app_Schedule);
 			if (sync_app_Schedule.equals("1")) { 
 				final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, schedule.getId());
 				if (schedule.getDeleted() == 1)
-					activity.getContentResolver().delete(uriId, null, null);
+					context.getContentResolver().delete(uriId, null, null);
 				else {
 					ContentValues values = new ContentValues();
 					values.put(ScheduleTable.CHANGED, 0);
-					activity.getContentResolver().update(uriId, values, null, null);
+					context.getContentResolver().update(uriId, values, null, null);
 				}
 			}
 		}
 	}
 	
-	public static void syncEachInstance(Activity activity, Schedule schedule) {
-		final long Id = getId(activity, schedule.getDayName(), schedule.getTime());
+	public static void syncEachInstance(Context context, Schedule schedule) {
+		final long Id = getId(context, schedule.getDayName(), schedule.getTime());
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
 		if (Id > 0) {
-			Schedule localSchedule = getSchedule(activity, Id);
+			Schedule localSchedule = getSchedule(context, Id);
 			if (localSchedule.getModified().compareTo(schedule.getModified()) < 0) {
 				if (schedule.getDeleted() == 1) {
-					activity.getContentResolver().delete(uriId, null, null);
+					context.getContentResolver().delete(uriId, null, null);
 					Log.d("sync from server", "deleted");
 				} else {
 					schedule.setChanged(0);
-					update(activity, schedule, Id);
+					update(context, schedule, Id);
 				}
 			} 
 		} else {
 			if (schedule.getDeleted() == 0) {
 				Log.d("sync from server", "pre insert: modified: " + schedule.getModified());
 				schedule.setChanged(0);
-				insert(activity, schedule);
+				insert(context, schedule);
 			}
 		}
 	}

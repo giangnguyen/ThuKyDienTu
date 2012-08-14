@@ -47,7 +47,10 @@ public class TodoListActivity extends ListActivity {
 			break;
 		}
 		case 2:
-			new SyncService(this, MainActivity.sUserId, IConstants.DataType.TODO);
+			Intent intent = new Intent(TodoListActivity.this, SyncService.class);
+			intent.putExtra(IConstants.User.ID, MainActivity.sUserId);
+			intent.putExtra(IConstants.DataType.DATA_TYPE, IConstants.DataType.TODO);
+			startService(intent);
 			break;
 		}
 		return true;

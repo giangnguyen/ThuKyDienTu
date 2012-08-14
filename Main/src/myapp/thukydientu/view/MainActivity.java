@@ -22,6 +22,8 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -75,6 +77,8 @@ public class MainActivity extends TabActivity {
 		mReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(final Context context, Intent intent) {
+				int dataType = intent.getIntExtra(IConstants.DataType.DATA_TYPE, IConstants.DataType.SCHEDULE);
+				
 				if (intent.getAction().equals(
 						IConstants.Service.DOWNLOAD_ACTION_STARTED)) {
 					Toast.makeText(context, "Download started!",
@@ -108,29 +112,43 @@ public class MainActivity extends TabActivity {
 									}).create().show();
 				}
 
-				if (intent.getAction().equals(
-						IConstants.Service.DOWNLOAD_ACTION_CANCELLED)) {
-					Toast.makeText(context, "Download cancelled!",
-							Toast.LENGTH_SHORT).show();
+				if (intent.getAction().equals(IConstants.Service.DOWNLOAD_ACTION_CANCELLED)) {
+					Toast.makeText(context, "Download cancelled!", Toast.LENGTH_SHORT).show();
 					AndroidUtil.log("OnReceive", "Download canceled!");
 				}
 
-				if (intent.getAction().equals(
-						IConstants.Service.SYNC_ACTION_STARTED)) {
-					Toast.makeText(context, "Bắt đầu đồng bộ!",
-							Toast.LENGTH_SHORT).show();
+				Animation syncAnimation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.sync);
+				
+				if (intent.getAction().equals(IConstants.Service.SYNC_ACTION_STARTED)) {
+					switch (dataType) {
+					case IConstants.DataType.SCHEDULE:
+						scheduleSync.setVisibility(View.VISIBLE);
+						scheduleSync.startAnimation(syncAnimation);
+						break;
+					case IConstants.DataType.TODO:
+						todoSync.setVisibility(View.VISIBLE);
+						scheduleSync.startAnimation(syncAnimation);
+						break;
+					}
+					Toast.makeText(context, "Bắt đầu đồng bộ!",	Toast.LENGTH_SHORT).show();
 					AndroidUtil.log("OnReceive", "Sync Started!");
 				}
 
-				if (intent.getAction().equals(
-						IConstants.Service.SYNC_ACTION_FINISHED)) {
+				if (intent.getAction().equals(IConstants.Service.SYNC_ACTION_FINISHED)) {
 					Toast.makeText(context, "Hoàn Thành Đồng Bộ!",
 							Toast.LENGTH_SHORT).show();
+					switch (dataType) {
+					case IConstants.DataType.SCHEDULE:
+						scheduleSync.setVisibility(View.INVISIBLE);
+						break;
+					case IConstants.DataType.TODO:
+						todoSync.setVisibility(View.INVISIBLE);
+						break;
+					}
 					AndroidUtil.log("OnReceive", "Sync Finished!");
 				}
 
-				if (intent.getAction().equals(
-						IConstants.Service.SYNC_ACTION_CANCELLED)) {
+				if (intent.getAction().equals(IConstants.Service.SYNC_ACTION_CANCELLED)) {
 					Toast.makeText(context, "Đồng Bộ Thất Bại!",
 							Toast.LENGTH_SHORT).show();
 					AndroidUtil.log("OnReceive", "Sync Canceled!");

@@ -97,7 +97,6 @@ public class WebservicesUtils {
 				SoapEnvelope.VER11);
 		envelope.dotNet = false;
 		envelope.setOutputSoapObject(request);
-		envelope.encodingStyle = "UTF-8";
 
 		HttpTransportSE androidHttpTransport = new HttpTransportSE(WEB_SERVICES_URL);
 		androidHttpTransport.debug = true;
