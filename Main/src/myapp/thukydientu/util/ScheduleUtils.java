@@ -67,7 +67,7 @@ public class ScheduleUtils {
 		final ContentValues values = new ContentValues();
 		values.put(ScheduleTable.DELETED, 1);
 		values.put(ScheduleTable.CHANGED, 1);
-		values.put(ScheduleTable.MODIFIED, TimeUtils.convert2String14(System.currentTimeMillis()));
+		values.put(ScheduleTable.MODIFIED, TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance()));
 		Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
 		if (Id == -1)
 			uriId = TKDTProvider.SCHEDULE_CONTENT_URI;
@@ -141,7 +141,7 @@ public class ScheduleUtils {
 	
 	public static String getDateSet(Context context, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.SCHEDULE_CONTENT_URI, Id);
-		String dateSet = TimeUtils.convert2String14(System.currentTimeMillis());
+		String dateSet = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 		final Cursor cursor = context.getContentResolver().query(
 				uriId, 
 				ScheduleTable.PROJECTION, 
@@ -207,11 +207,12 @@ public class ScheduleUtils {
 		List<Schedule> listSchedule = new ArrayList<Schedule>();
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 		final Cursor cursor = context.getContentResolver().query(
 				TKDTProvider.SCHEDULE_CONTENT_URI, 
 				ScheduleTable.PROJECTION, 
 				ScheduleTable.DATE_NAME + "=?", 
-				new String[]{String.valueOf(calendar.get(Calendar.DAY_OF_WEEK))}, 
+				new String[]{String.valueOf(dayOfWeek)}, 
 				null);
 		if (cursor.moveToFirst()) {
 			do {

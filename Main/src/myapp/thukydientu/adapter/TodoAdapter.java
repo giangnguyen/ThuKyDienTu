@@ -1,11 +1,13 @@
 package myapp.thukydientu.adapter;
 
+import java.util.Calendar;
+
 import myapp.thukydientu.R;
 import myapp.thukydientu.database.TodoTable;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.Todo;
 import myapp.thukydientu.provider.TKDTProvider;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.TodoUtils;
 import myapp.thukydientu.view.TodoAddActivity;
 import android.app.Activity;
@@ -97,23 +99,23 @@ public class TodoAdapter extends CursorAdapter {
 		final Todo todo = new Todo();
 		TodoUtils.bindTodoData(todo, cursor);
 		
-		final long startTime = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
+		final Calendar calendarStartTime = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateStart(), todo.getTimeFrom());
 		
 		final long currentTime = System.currentTimeMillis();
-		if (startTime < currentTime)
+		if (calendarStartTime.getTimeInMillis() < currentTime)
 			view.setBackgroundResource(R.drawable.list_item_out_of_date);
 		else 
 			view.setBackgroundResource(R.drawable.list_item);
 		
-		holder.date.setText(TimeUtils.getDateLable(mContext, startTime));
-		holder.time.setText(TimeUtils.getTimeLable(mContext, startTime));
+		holder.date.setText(TaleTimeUtils.getDateLable(mContext, calendarStartTime));
+		holder.time.setText(TaleTimeUtils.getTimeLable(mContext, calendarStartTime));
 
 		holder.event.setText(todo.getTitle());
 		holder.description.setText(todo.getWork());
 		
-		final long endTime = TimeUtils.toTimeInMilisecond(todo.getDateEnd(), todo.getTimeUntil());
+		final Calendar calendarEndTime = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateEnd(), todo.getTimeUntil());
 		
-		holder.end.setText(TimeUtils.getTimeLable(mContext, endTime) + " " + TimeUtils.getDateLable(mContext, endTime));
+		holder.end.setText(TaleTimeUtils.getTimeLable(mContext, calendarEndTime) + " " + TaleTimeUtils.getDateLable(mContext, calendarEndTime));
 		
 		holder.edit.setOnClickListener(new View.OnClickListener() {
 			@Override

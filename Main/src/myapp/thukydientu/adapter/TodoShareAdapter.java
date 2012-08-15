@@ -1,11 +1,12 @@
 package myapp.thukydientu.adapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import myapp.thukydientu.R;
 import myapp.thukydientu.model.Todo;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,21 +49,21 @@ public class TodoShareAdapter extends BaseAdapter {
 	public void bindView(View view, Todo todo) {
 		ViewHolder holder = (ViewHolder) view.getTag();
 		
-		final long startTime = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
+		final Calendar calendarStartTime = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateStart(), todo.getTimeFrom());
 		final long currentTime = System.currentTimeMillis();
-		if (startTime < currentTime)
+		if (calendarStartTime.getTimeInMillis() < currentTime)
 			view.setBackgroundResource(R.drawable.list_item_out_of_date);
 		else 
 			view.setBackgroundResource(R.drawable.list_item);
 		
-		holder.date.setText(TimeUtils.getDateLable(mContext, startTime));
-		holder.time.setText(TimeUtils.getTimeLable(mContext, startTime));
+		holder.date.setText(TaleTimeUtils.getDateLable(mContext, calendarStartTime));
+		holder.time.setText(TaleTimeUtils.getTimeLable(mContext, calendarStartTime));
 
 		holder.event.setText(todo.getTitle());
 		holder.description.setText(todo.getWork());
 		
-		final long endTime = Long.parseLong(todo.getDateEnd());
-		holder.end.setText(TimeUtils.getTimeLable(mContext, endTime) + " " + TimeUtils.getDateLable(mContext, endTime));
+		final Calendar calendarEndTime = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateEnd(), todo.getTimeUntil());
+		holder.end.setText(TaleTimeUtils.getTimeLable(mContext, calendarEndTime) + " " + TaleTimeUtils.getDateLable(mContext, calendarEndTime));
 	}
 
 	public View newView() {

@@ -109,9 +109,10 @@ public interface IConstants {
 	}
 	
 	class DataType {
-		public static final String DATA_TYPE = "DATA_TYPE";
-		public static final int SCHEDULE = 1;
-		public static final int TODO 	= 2;
+		public static final String DATA_TYPE 	= "DATA_TYPE";
+		public static final int SCHEDULE 		= 1;
+		public static final int TODO 			= 2;
+		public static final int ALL 			= 3;
 	}
 	
 	class ShareLocation {

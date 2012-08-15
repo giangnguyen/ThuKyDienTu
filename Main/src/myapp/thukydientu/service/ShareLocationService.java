@@ -1,9 +1,10 @@
 package myapp.thukydientu.service;
 
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.WebservicesUtils;
 import myapp.thukydientu.view.MainActivity;
 import android.app.Service;
@@ -58,8 +59,7 @@ public class ShareLocationService extends Service implements LocationListener {
 
 		final double latitude = location.getLatitude();
 		final double longitude = location.getLongitude();
-		WebservicesUtils.addLocation(MainActivity.sUserId, latitude, longitude,
-				false, TimeUtils.convert2String14(System.currentTimeMillis()));
+		WebservicesUtils.addLocation(MainActivity.sUserId, latitude, longitude,	false, TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance()));
 	}
 	@Override
 	public void onLocationChanged(Location location) {

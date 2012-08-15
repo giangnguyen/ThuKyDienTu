@@ -3,7 +3,6 @@ package myapp.thukydientu.view;
 import myapp.thukydientu.R;
 import myapp.thukydientu.adapter.ScheduleAdapter;
 import myapp.thukydientu.model.IConstants;
-import myapp.thukydientu.service.MyIntentService;
 import myapp.thukydientu.service.SyncService;
 import myapp.thukydientu.util.ScheduleUtils;
 import android.app.AlertDialog;
@@ -22,7 +21,6 @@ public class ScheduleListActivity extends ExpandableListActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 
 		// Set up our adapter
@@ -54,7 +52,6 @@ public class ScheduleListActivity extends ExpandableListActivity {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		case 0: {
-//			new SyncService(this, MainActivity.sUserId, IConstants.DataType.SCHEDULE);
 			Intent intent = new Intent(ScheduleListActivity.this, SyncService.class);
 			intent.putExtra(IConstants.User.ID, MainActivity.sUserId);
 			intent.putExtra(IConstants.DataType.DATA_TYPE, IConstants.DataType.SCHEDULE);

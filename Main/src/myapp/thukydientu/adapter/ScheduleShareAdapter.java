@@ -7,7 +7,7 @@ import java.util.List;
 import myapp.thukydientu.R;
 import myapp.thukydientu.model.Schedule;
 import myapp.thukydientu.util.ScheduleUtils;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -86,14 +86,11 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 
 		ChildHolder holder = (ChildHolder) view.getTag();
 
-		final String time = schedule.getTime();
+		final String timeString = schedule.getTime();
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.HOUR_OF_DAY, TimeUtils.getHour(time));
-		cal.set(Calendar.MINUTE, TimeUtils.getMinute(time));
-		cal.set(Calendar.SECOND, 0);
+		Calendar calendar = TaleTimeUtils.createCalendarByTimeString(timeString);
 
-		holder.date.setText(getPeriodOfDay(cal));
+		holder.date.setText(getPeriodOfDay(calendar));
 		holder.delete.setBackgroundResource(R.drawable.list_item_add_selector);
 		holder.delete.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -110,7 +107,7 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 			}
 		});
 		
-		holder.time.setText(TimeUtils.getTimeLable(mContext, cal.getTimeInMillis()));
+		holder.time.setText(TaleTimeUtils.getTimeLable(mContext, calendar));
 		holder.school.setText(schedule.getSchoolName());
 		holder.subject.setText(schedule.getSubject());
 		holder.className.setText(schedule.getClassName());
@@ -121,7 +118,7 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 
 		final GroupHolder holder = getGroupHolder(view);
 
-		holder.dateName.setText(TimeUtils.getDateName(dayOfWeeks[groupPosition]));
+		holder.dateName.setText(TaleTimeUtils.getDayOfWeekString(dayOfWeeks[groupPosition]));
 
 		final int count = getChildrenCount(groupPosition);
 		if (count > 0)

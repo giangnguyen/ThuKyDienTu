@@ -1,13 +1,14 @@
 package myapp.thukydientu.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import myapp.thukydientu.model.Schedule;
 import myapp.thukydientu.model.TimeDuration;
 import myapp.thukydientu.model.Todo;
 import myapp.thukydientu.util.ScheduleUtils;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.TodoUtils;
 import android.app.Activity;
 
@@ -18,6 +19,9 @@ public class HintTimeManager {
 	private int endDate;
 	private long duration;
 	
+	public HintTimeManager() {
+		
+	}
 	public HintTimeManager(long startTime, long endTime, int startDate, int endDate, long duration) {
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -43,15 +47,17 @@ public class HintTimeManager {
 		
 		List<Schedule> listSchedule = ScheduleUtils.getListScheduleByDay(activity, dayOfMonth);
 		for (Schedule schedule : listSchedule) {
-			final long startTime = TimeUtils.getTimeInMilisecond(schedule.getTime());
+			Calendar calendarStart = TaleTimeUtils.createCalendarByTimeString(schedule.getTime());
+			calendarStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 			final long endTime = startTime + schedule.getLessons() * schedule.getLessonDuration() * 60 * 1000;
 			removeDeadTime(hints, new TimeDuration(startTime, endTime));
 		}
 		
 		List<Todo> listTodo = TodoUtils.getListTodoByDay(activity, dayOfMonth);
 		for (Todo todo : listTodo) {
-			final long startTime = TimeUtils.getTimeInMilisecond(todo.getTimeFrom());
-			final long endTime = TimeUtils.getTimeInMilisecond(todo.getTimeUntil());
+			Calendar startTime = TaleTimeUtils.createCalendarByTimeString(timeString)
+			final long startTime = TaleTimeUtils.convert2Milisecond(todo.getTimeFrom());
+			final long endTime = TaleTimeUtils.convert2Milisecond(todo.getTimeUntil());
 			removeDeadTime(hints, new TimeDuration(startTime, endTime));
 		}
 		

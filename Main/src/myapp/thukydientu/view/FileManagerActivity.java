@@ -408,6 +408,10 @@ public class FileManagerActivity extends BackToMainActivity {
 	private class UploadFileTask extends AsyncTask<MyFile, Void, Void> {
 
 		@Override
+		protected void onPreExecute() {
+			Toast.makeText(mContext, "Bắt đầu tải tài liệu lên server", Toast.LENGTH_LONG).show();
+		}
+		@Override
 		protected Void doInBackground(MyFile... params) {
 			try {
 				WebservicesUtils.addFile(userId, params[0]);
@@ -419,7 +423,7 @@ public class FileManagerActivity extends BackToMainActivity {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			Toast.makeText(mContext, "Upload Success!", Toast.LENGTH_LONG).show();
+			Toast.makeText(mContext, "Đã tải tài liệu lên server thành công!", Toast.LENGTH_LONG).show();
 		}
 	}
 

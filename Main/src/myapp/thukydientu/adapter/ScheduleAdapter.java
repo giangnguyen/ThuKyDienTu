@@ -8,7 +8,7 @@ import myapp.thukydientu.database.ScheduleTable;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.provider.TKDTProvider;
 import myapp.thukydientu.util.ScheduleUtils;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.view.ScheduleAddActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -147,31 +147,22 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 
 		final long Id = cursor.getLong(ScheduleTable.ID_COLUMN_INDEX);
 
-		final String time = cursor
-				.getString(ScheduleTable.TIME_COLUMN_INDEX);
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.HOUR_OF_DAY, TimeUtils.getHour(time));
-		cal.set(Calendar.MINUTE, TimeUtils.getMinute(time));
-		cal.set(Calendar.SECOND, 0);
+		final String timeString = cursor.getString(ScheduleTable.TIME_COLUMN_INDEX);
+		Calendar calendar = TaleTimeUtils.createCalendarByTimeString(timeString);
 
 		holder.id = cursor.getLong(ScheduleTable.ID_COLUMN_INDEX);
-		holder.date.setText(getPeriodOfDay(cal));
-		holder.time.setText(TimeUtils.getTimeLable(context,
-				cal.getTimeInMillis()));
-		holder.school.setText(cursor
-				.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
-		holder.subject.setText(cursor
-				.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
-		holder.className.setText(cursor
-				.getString(ScheduleTable.CLASS_COLUMN_INDEX));
+		holder.date.setText(getPeriodOfDay(calendar));
+		holder.time.setText(TaleTimeUtils.getTimeLable(context,	calendar));
+		holder.school.setText(cursor.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
+		holder.subject.setText(cursor.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
+		holder.className.setText(cursor.getString(ScheduleTable.CLASS_COLUMN_INDEX));
 
 		holder.edit.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 
-				Intent intent = new Intent(mContext,
-						ScheduleAddActivity.class);
+				Intent intent = new Intent(mContext, ScheduleAddActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putLong(IConstants._ID, Id);
 				intent.putExtras(bundle);
@@ -224,7 +215,7 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 		final int dayOfWeek = cursor
 				.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
 
-		holder.dateName.setText(TimeUtils.getDateName(dayOfWeek));
+		holder.dateName.setText(TaleTimeUtils.getDayOfWeekString(dayOfWeek));
 
 		holder.add_schedule.setOnClickListener(new View.OnClickListener() {
 

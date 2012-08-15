@@ -80,7 +80,7 @@ public class TodoUtils {
 	
 	public static String getDateSet(Context context, long Id) {
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, Id);
-		String dateSet = TimeUtils.convert2String14(System.currentTimeMillis());
+		String dateSet = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 		final Cursor cursor = context.getContentResolver().query(
 				uriId, 
 				TodoTable.PROJECTION, 
@@ -111,7 +111,7 @@ public class TodoUtils {
 				ContentValues values = new ContentValues();
 				values.put(TodoTable.CHANGED, 1);
 				values.put(TodoTable.DELETED, 1);
-				values.put(TodoTable.MODIFIED, TimeUtils.convert2String14(System.currentTimeMillis()));
+				values.put(TodoTable.MODIFIED, TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance()));
 				
 				Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todo.getId());
 				context.getContentResolver().update(uriId, values, null, null);
@@ -155,45 +155,6 @@ public class TodoUtils {
 		return Id;
 	}
 	
-	public static long getTodoIdByEventId(Context context, long eventId) {
-		
-		if (eventId == -1)
-			return -1;
-		
-		final Uri uriId = ContentUris.withAppendedId(event.CONTENT_URI, eventId);
-		final Cursor eventCursor = context.getContentResolver().query(uriId, event.PROJECTION, null, null, null);
-		
-		long Id = -1;
-		if (eventCursor.moveToFirst()) {
-			final long startTime = eventCursor.getLong(event.DATE_START_COLUMN_INDEX);
-			final long endTime = eventCursor.getLong(event.DATE_END_COLUMN_INDEX);
-			Id = getId(context, TimeUtils.getDate(startTime), TimeUtils.getTime(startTime), TimeUtils.getTime(endTime));
-		}
-		closeCursor(eventCursor);
-		
-		return Id;
-	}
-	
-	public static long getEventIdByTodoId(Context context, long todoId) {
-		
-		if (todoId == -1)
-			return -1;
-		
-		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todoId);
-		final Cursor todoCursor = context.getContentResolver().query(uriId, event.PROJECTION, null, null, null);
-		
-		long Id = -1;
-		if (todoCursor.moveToFirst()) {
-			
-			final long startTime = todoCursor.getLong(event.DATE_START_COLUMN_INDEX);
-			final long endTime = todoCursor.getLong(event.DATE_END_COLUMN_INDEX);
-			Id = getId(context, TimeUtils.getDate(startTime), TimeUtils.getTime(startTime), TimeUtils.getTime(endTime));
-		}
-		closeCursor(todoCursor);
-		
-		return Id;
-	}
-
 	public static boolean checkDeleted(Context context, long id) {
 		int deleted = 0;
 		final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, id);
@@ -223,8 +184,8 @@ public class TodoUtils {
 		values.put(IConstants.event.CALENDAR_ID, IConstants.event.CALENDAR);
 		values.put(IConstants.event.TITLE, todo.getTitle());
 		values.put(IConstants.event.DESCRIPTION, todo.getWork());
-		final long dtstart = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
-		final long dtend = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeUntil());
+		final long dtstart = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateStart(), todo.getTimeFrom()).getTimeInMillis();
+		final long dtend = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateEnd(), todo.getTimeUntil()).getTimeInMillis();
 		values.put(IConstants.event.DATE_START, dtstart);
 		values.put(IConstants.event.DATE_END, dtend);
 		values.put(IConstants.event.TIMEZONE, TimeZone.getDefault().toString());
@@ -256,8 +217,8 @@ public class TodoUtils {
 		values.put(IConstants.event.CALENDAR_ID, IConstants.event.CALENDAR);
 		values.put(IConstants.event.TITLE, todo.getTitle());
 		values.put(IConstants.event.DESCRIPTION, todo.getWork());
-		final long dtstart = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
-		final long dtend = TimeUtils.toTimeInMilisecond(todo.getDateEnd(), todo.getTimeUntil());
+		final long dtstart = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateStart(), todo.getTimeFrom()).getTimeInMillis();
+		final long dtend = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateEnd(), todo.getTimeUntil()).getTimeInMillis();
 		values.put(IConstants.event.DATE_START, dtstart);
 		values.put(IConstants.event.DATE_END, dtend);
 		values.put(IConstants.event.HAS_ALARM, todo.getAlarm());
@@ -272,8 +233,8 @@ public class TodoUtils {
 	
 	public static long getEventIdByTodo(Context context, Todo todo) {
 		long eventId = -1;
-		final long dateStart = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeFrom());
-		final long dateEnd = TimeUtils.toTimeInMilisecond(todo.getDateStart(), todo.getTimeUntil());
+		final long dateStart = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateStart(), todo.getTimeFrom()).getTimeInMillis();
+		final long dateEnd = TaleTimeUtils.createCalendarByDateTimeString(todo.getDateStart(), todo.getTimeUntil()).getTimeInMillis();
 		final Cursor eventCursor = context.getContentResolver().query(
 				event.CONTENT_URI, 
 				event.PROJECTION, 
@@ -357,7 +318,7 @@ public class TodoUtils {
 				TKDTProvider.TODO_CONTENT_URI, 
 				TodoTable.PROJECTION, 
 				TodoTable.DATE_START + "=?", 
-				new String[]{TimeUtils.getDate(cal.getTimeInMillis())}, 
+				new String[]{TaleTimeUtils.getDateStringByCalendar(cal)}, 
 				null
 				);
 		if (cursor.moveToFirst()) {

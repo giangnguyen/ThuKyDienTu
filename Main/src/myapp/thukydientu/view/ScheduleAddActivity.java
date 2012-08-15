@@ -8,17 +8,15 @@ import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.Schedule;
 import myapp.thukydientu.provider.TKDTProvider;
 import myapp.thukydientu.util.ScheduleUtils;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,13 +41,11 @@ public class ScheduleAddActivity extends Activity {
 	private EditText editSubject;
 	private Button btnAdd;
 
-	ContentValues mValues;
-	Schedule mSchedule;
-	int userId;
-	boolean isEdit;
-	long oldId;
-	int mDateName;
-	long time;
+	private Schedule mSchedule;
+	private boolean isEdit;
+	private long oldId;
+	private int mDateName;
+	private Calendar mCalendar;
 	
 	ProgressDialog mLoading;
 
@@ -120,23 +116,15 @@ public class ScheduleAddActivity extends Activity {
 		if (oldId == 0) {
 			isEdit = false;
 			mDateName = bundle.getInt(ScheduleTable.DATE_NAME);
-			tViewDayName.setText(TimeUtils.getDateName(mDateName));
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.SECOND, 0);
-			time = cal.getTimeInMillis();
+			tViewDayName.setText(TaleTimeUtils.getDayOfWeekString(mDateName));
 			
-			btnTime.setText(TimeUtils.getTimeLable(this, time));
+			btnTime.setText(TaleTimeUtils.getTimeLable(this, Calendar.getInstance()));
 			btnAdd.setText("Thêm");
 		} else {
 			isEdit = true;
 			showAlreadyData();
 			btnAdd.setText("Lưu");
 		}
-
-		SharedPreferences prefs = getSharedPreferences(IConstants.PREF_NAME, MODE_PRIVATE);
-		userId = prefs.getInt(IConstants.User.ID, 0);
-		
-		mValues = new ContentValues();
 
 		// thêm sự kiện click khi click vào button Thêm
 		btnTime.setOnClickListener(setTimeClicked());
@@ -147,12 +135,8 @@ public class ScheduleAddActivity extends Activity {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hour, int minute) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.HOUR_OF_DAY, hour);
-			cal.set(Calendar.MINUTE, minute);
-			cal.set(Calendar.SECOND, 0);
-			time = cal.getTimeInMillis();
-			btnTime.setText(TimeUtils.getTimeLable(ScheduleAddActivity.this, time));
+			mCalendar = TaleTimeUtils.createCalendar(hour, minute);
+			btnTime.setText(TaleTimeUtils.getTimeLable(ScheduleAddActivity.this, mCalendar));
 		}
 	};
 
@@ -259,14 +243,10 @@ public class ScheduleAddActivity extends Activity {
 		if (cursor.moveToFirst()) {
 			do {
 				mDateName = cursor.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
-				tViewDayName.setText(TimeUtils.getDateName(mDateName));
+				tViewDayName.setText(TaleTimeUtils.getDayOfWeekString(mDateName));
 				String timeString = cursor.getString(ScheduleTable.TIME_COLUMN_INDEX);
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR_OF_DAY, TimeUtils.getHour(timeString));
-				cal.set(Calendar.MINUTE, TimeUtils.getMinute(timeString));
-				cal.set(Calendar.SECOND, 0);
-				time = cal.getTimeInMillis();
-				btnTime.setText(TimeUtils.getTimeLable(ScheduleAddActivity.this, time));
+				mCalendar = TaleTimeUtils.createCalendarByTimeString(timeString);
+				btnTime.setText(TaleTimeUtils.getTimeLable(ScheduleAddActivity.this, mCalendar));
 				editSchoolName.setText(cursor.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
 				editClassName.setText(cursor.getString(ScheduleTable.CLASS_COLUMN_INDEX));
 				editSubject.setText(cursor.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
@@ -297,7 +277,7 @@ public class ScheduleAddActivity extends Activity {
 					showDialog(MISSING_INFO_DIALOG);
 				} else {
 					mSchedule.setDayName(mDateName);
-					mSchedule.setTime(TimeUtils.getTime(time));
+					mSchedule.setTime(TaleTimeUtils.getTimeStringByCalendar(mCalendar));
 					mSchedule.setSchoolName(editSchoolName.getText().toString());
 					mSchedule.setClassName(editClassName.getText().toString());
 					mSchedule.setSubject(editSubject.getText().toString());

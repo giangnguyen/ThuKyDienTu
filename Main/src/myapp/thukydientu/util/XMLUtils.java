@@ -3,6 +3,7 @@ package myapp.thukydientu.util;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -212,7 +213,7 @@ public class XMLUtils {
 				scheduleElement = elm.getElementsByTagName(ScheduleTable.TIME).item(0);
 				childNode = scheduleElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getTime(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Schedule from xml", "time: " + tmp);
@@ -252,7 +253,7 @@ public class XMLUtils {
 				scheduleElement = elm.getElementsByTagName(ScheduleTable.CREATED).item(0);
 				childNode = scheduleElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getDate(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Schedule from xml", "dateSet: " + tmp);
@@ -262,7 +263,7 @@ public class XMLUtils {
 				scheduleElement = elm.getElementsByTagName(ScheduleTable.MODIFIED).item(0);
 				childNode = scheduleElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getDate(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Schedule from xml", "modified: " + tmp);
@@ -304,7 +305,7 @@ public class XMLUtils {
 				todoElement = elm.getElementsByTagName(TodoTable.DATE_START).item(0);
 				childNode = todoElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getDate(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getDateStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Todo from xml", "dateStart: " + tmp);
@@ -314,7 +315,7 @@ public class XMLUtils {
 				todoElement = elm.getElementsByTagName(TodoTable.DATE_END).item(0);
 				childNode = todoElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getDate(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getDateStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Todo from xml", "dateEnd: " + tmp);
@@ -324,7 +325,7 @@ public class XMLUtils {
 				todoElement = elm.getElementsByTagName(TodoTable.TIME_FROM).item(0);
 				childNode = todoElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getTime(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Todo from xml", "timeFrom: " + tmp);
@@ -334,7 +335,7 @@ public class XMLUtils {
 				todoElement = elm.getElementsByTagName(TodoTable.TIME_UNTIL).item(0);
 				childNode = todoElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getTime(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Todo from xml", "timeUntil: " + tmp);
@@ -374,7 +375,7 @@ public class XMLUtils {
 				todoElement = elm.getElementsByTagName(TodoTable.DATE_SET).item(0);
 				childNode = todoElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getTime(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Todo from xml", "dateSet: " + tmp);
@@ -384,7 +385,7 @@ public class XMLUtils {
 				todoElement = elm.getElementsByTagName(TodoTable.MODIFIED).item(0);
 				childNode = todoElement.getFirstChild();
 				if (childNode == null) 
-					tmp = TimeUtils.getTime(System.currentTimeMillis());
+					tmp = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 				else 
 					tmp = childNode.getNodeValue();
 				Log.d("Todo from xml", "modified: " + tmp);

@@ -8,7 +8,7 @@ import myapp.thukydientu.adapter.TodoShareAdapter;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.service.ShareLocationService;
 import myapp.thukydientu.util.QREncodeUtil;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.WebservicesUtils;
 import myapp.thukydientu.util.XMLUtils;
 import android.app.Activity;
@@ -246,8 +246,8 @@ public class HomeActivity extends Activity {
 			dateStartButton = (Button) optionTodoView.findViewById(R.id.start_date);
 			dateEndButton = (Button) optionTodoView.findViewById(R.id.end_date);
 
-			dateStartButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateStart.getTimeInMillis()));
-			dateEndButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateEnd.getTimeInMillis()));
+			dateStartButton.setText(TaleTimeUtils.getDateLable(HomeActivity.this, mDateStart));
+			dateEndButton.setText(TaleTimeUtils.getDateLable(HomeActivity.this, mDateEnd));
 			
 			dateStartButton.setOnClickListener(new View.OnClickListener() {
 				
@@ -272,8 +272,8 @@ public class HomeActivity extends Activity {
 			builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					final String startDateString = TimeUtils.getDate(mDateStart.getTimeInMillis());
-					final String endDateString = TimeUtils.getDate(mDateEnd.getTimeInMillis());
+					final String startDateString = TaleTimeUtils.getDateStringByCalendar(mDateStart);
+					final String endDateString = TaleTimeUtils.getDateStringByCalendar(mDateEnd);
 					final String table = "todo";
 					final String QRText = QREncodeUtil.convertTodo2QRText(MainActivity.sUserId, table, startDateString, endDateString);
 					QREncodeUtil.textEncode(HomeActivity.this, QRText);
@@ -298,10 +298,10 @@ public class HomeActivity extends Activity {
 			Log.d(tag, "Year: " + year + ", Month: " + monthOfYear + ", day: " + dayOfMonth);
 			if (isDateStartPick) {
 				mDateStart.set(year, monthOfYear, dayOfMonth);
-				dateStartButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateStart.getTimeInMillis()));
+				dateStartButton.setText(TaleTimeUtils.getDateLable(HomeActivity.this, mDateStart));
 			} else { 
 				mDateEnd.set(year, monthOfYear, dayOfMonth);
-				dateEndButton.setText(TimeUtils.getDateLable(HomeActivity.this, mDateEnd.getTimeInMillis()));
+				dateEndButton.setText(TaleTimeUtils.getDateLable(HomeActivity.this, mDateEnd));
 			}
 		}
 	};
@@ -379,7 +379,7 @@ public class HomeActivity extends Activity {
 		}
 		@Override
 		protected String doInBackground(Void... params) {
-			return WebservicesUtils.addNotice(MainActivity.sUserId, mTitle, mContent, TimeUtils.convert2String14(System.currentTimeMillis()));
+			return WebservicesUtils.addNotice(MainActivity.sUserId, mTitle, mContent, TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance()));
 		}
 		
 		@Override

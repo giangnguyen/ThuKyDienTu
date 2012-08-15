@@ -5,7 +5,7 @@ import java.util.Calendar;
 import myapp.thukydientu.R;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.Todo;
-import myapp.thukydientu.util.TimeUtils;
+import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.TodoUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,8 +36,8 @@ public class TodoAddActivity extends Activity {
 	Button mEndTimeView;
 	Button mAdd;
 	CheckBox mAlarm;
-	Calendar mDateStart;
-	Calendar mDateEnd;
+	Calendar mCalendarStart;
+	Calendar mCalendarEnd;
 	Todo mTodo;
 	
 	Bundle mBundle;
@@ -84,14 +84,14 @@ public class TodoAddActivity extends Activity {
 		mYear = c.get(Calendar.YEAR);
 		mMonth = c.get(Calendar.MONTH);
 		mDate = c.get(Calendar.DAY_OF_MONTH);
-		mDateStart = Calendar.getInstance();
-		mDateStart.set(Calendar.SECOND, 0);
-		mDateEnd = Calendar.getInstance();
-		mDateEnd.set(Calendar.SECOND, 0);
+		mCalendarStart = Calendar.getInstance();
+		mCalendarStart.set(Calendar.SECOND, 0);
+		mCalendarEnd = Calendar.getInstance();
+		mCalendarEnd.set(Calendar.SECOND, 0);
 		
-		mDateView.setText(TimeUtils.getDateLable(TodoAddActivity.this, mDateStart.getTimeInMillis()));
-		mStartTimeView.setText(TimeUtils.getTimeLable(TodoAddActivity.this, mDateStart.getTimeInMillis()));
-		mEndTimeView.setText(TimeUtils.getTimeLable(TodoAddActivity.this, mDateEnd.getTimeInMillis()));
+		mDateView.setText(TaleTimeUtils.getDateLable(TodoAddActivity.this, mCalendarStart));
+		mStartTimeView.setText(TaleTimeUtils.getTimeLable(TodoAddActivity.this, mCalendarStart));
+		mEndTimeView.setText(TaleTimeUtils.getTimeLable(TodoAddActivity.this, mCalendarEnd));
 		
 		mBundle = getIntent().getExtras();
 		if (mBundle != null) {
@@ -136,10 +136,10 @@ public class TodoAddActivity extends Activity {
 				if (isInputFieldEmpty())
 					showDialog(MISSING_INFO_DIALOG);
 				else {
-					mTodo.setDateStart(TimeUtils.getDate(mDateStart.getTimeInMillis()));
-					mTodo.setDateEnd(TimeUtils.getDate(mDateStart.getTimeInMillis()));
-					mTodo.setTimeFrom(TimeUtils.getTime(mDateStart.getTimeInMillis()));
-					mTodo.setTimeUntil(TimeUtils.getTime(mDateEnd.getTimeInMillis()));
+					mTodo.setDateStart(TaleTimeUtils.getDateStringByCalendar(mCalendarStart));
+					mTodo.setDateEnd(TaleTimeUtils.getDateStringByCalendar(mCalendarStart));
+					mTodo.setTimeFrom(TaleTimeUtils.getTimeStringByCalendar(mCalendarStart));
+					mTodo.setTimeUntil(TaleTimeUtils.getTimeStringByCalendar(mCalendarEnd));
 					mTodo.setTitle(mEvent.getText().toString());
 					mTodo.setWork(mDescription.getText().toString());
 					mTodo.setAlarm(mAlarm.isChecked() ?  1: 0);
@@ -165,11 +165,15 @@ public class TodoAddActivity extends Activity {
 			return;
 		mEvent.setText(cursor.getString(IConstants.event.TITLE_COLUMN_INDEX));
 		mDescription.setText(cursor.getString(IConstants.event.DESCRIPTION_COLUMN_INDEX));
-		final long startTime = cursor.getLong(IConstants.event.DATE_START_COLUMN_INDEX);
-		mDateView.setText(TimeUtils.getDateLable(this, startTime));
-		mStartTimeView.setText(TimeUtils.getTimeLable(this, startTime));
-		final long endTime = cursor.getLong(IConstants.event.DATE_END_COLUMN_INDEX);
-		mEndTimeView.setText(TimeUtils.getTimeLable(this, endTime));
+		
+		final String startDateString = cursor.getString(IConstants.event.DATE_START_COLUMN_INDEX);
+		mCalendarStart = TaleTimeUtils.createCalendarByDateString(startDateString);
+		mDateView.setText(TaleTimeUtils.getDateLable(this, mCalendarStart));
+		mStartTimeView.setText(TaleTimeUtils.getTimeLable(this, mCalendarStart));
+		
+		final String endDateString = cursor.getString(IConstants.event.DATE_END_COLUMN_INDEX);
+		mCalendarEnd = TaleTimeUtils.createCalendarByDateString(endDateString);
+		mEndTimeView.setText(TaleTimeUtils.getTimeLable(this, mCalendarEnd));
 		mAlarm.setChecked(cursor.getInt(IConstants.event.HAS_ALARM_COLUMN_INDEX) == 0 ? false : true);
 		mAdd.setText(getString(R.string.save));
 	}
@@ -191,9 +195,9 @@ public class TodoAddActivity extends Activity {
 			mYear = year;
 			mMonth = monthOfYear;
 			mDate = dayOfMonth;
-			mDateStart.set(mYear, mMonth, mDate);
-			mDateEnd.set(mYear, mMonth, mDate);
-			mDateView.setText(TimeUtils.getDateLable(TodoAddActivity.this, mDateStart.getTimeInMillis()));
+			mCalendarStart.set(mYear, mMonth, mDate);
+			mCalendarEnd.set(mYear, mMonth, mDate);
+			mDateView.setText(TaleTimeUtils.getDateLable(TodoAddActivity.this, mCalendarStart));
 		}
 	};
 	
@@ -202,15 +206,15 @@ public class TodoAddActivity extends Activity {
 		@Override
 		public void onTimeSet(TimePicker view, int hour, int minute) {
 			if (mDateFlag == START_FLAG) {
-				mDateStart.set(Calendar.HOUR_OF_DAY, hour);
-				mDateStart.set(Calendar.MINUTE, minute);
-				mDateStart.set(Calendar.SECOND, 0);
-				mStartTimeView.setText(TimeUtils.getTimeLable(TodoAddActivity.this, mDateStart.getTimeInMillis()));
+				mCalendarStart.set(Calendar.HOUR_OF_DAY, hour);
+				mCalendarStart.set(Calendar.MINUTE, minute);
+				mCalendarStart.set(Calendar.SECOND, 0);
+				mStartTimeView.setText(TaleTimeUtils.getTimeLable(TodoAddActivity.this, mCalendarStart));
 			} else {
-				mDateEnd.set(Calendar.HOUR_OF_DAY, hour);
-				mDateEnd.set(Calendar.MINUTE, minute);
-				mDateEnd.set(Calendar.SECOND, 0);
-				mEndTimeView.setText(TimeUtils.getTimeLable(TodoAddActivity.this, mDateEnd.getTimeInMillis()));
+				mCalendarEnd.set(Calendar.HOUR_OF_DAY, hour);
+				mCalendarEnd.set(Calendar.MINUTE, minute);
+				mCalendarEnd.set(Calendar.SECOND, 0);
+				mEndTimeView.setText(TaleTimeUtils.getTimeLable(TodoAddActivity.this, mCalendarEnd));
 			}
 		}
 	};
@@ -219,7 +223,7 @@ public class TodoAddActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case TIME_PICKER_DIALOG: {
-			return new TimePickerDialog(this, mTimeSetListener, mDateStart.get(Calendar.HOUR_OF_DAY), mDateStart.get(Calendar.MINUTE), true);
+			return new TimePickerDialog(this, mTimeSetListener, mCalendarStart.get(Calendar.HOUR_OF_DAY), mCalendarStart.get(Calendar.MINUTE), true);
 		}
 		case DATE_PICKER_DIALOG: {
 			return new DatePickerDialog(TodoAddActivity.this, mDateSetListener, mYear, mMonth, mDate);
