@@ -4,59 +4,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimeDuration {
-	private long StartTime;
-	private long EndTime;
-	
-	public TimeDuration(long startTime, long endTime) {
-		this.StartTime = startTime;
-		this.EndTime = endTime;
+	private long StartMillis;
+	private long EndMillis;
+
+	public TimeDuration(long startMillis, long endMillis) {
+		this.StartMillis 	= startMillis;
+		this.EndMillis   	= endMillis;
 	}
 	
-	public long getStartTime() {
-		return StartTime;
+	public long getStartMillis() {
+		return StartMillis;
 	}
-	
-	public void setStartTime(long startTime) {
-		this.StartTime = startTime;
+
+	public void setStartMillis(long startMillis) {
+		StartMillis = startMillis;
 	}
-	
-	public long getEndTime() {
-		return EndTime;
+
+	public long getEndMillis() {
+		return EndMillis;
 	}
-	
-	public void setEndTime(long endTime) {
-		this.EndTime = endTime;
+
+	public void setEndMillis(long endMillis) {
+		EndMillis = endMillis;
 	}
-	
+
 	public long getDuration() {
-		return this.EndTime - this.StartTime;
+		return EndMillis - StartMillis;
 	}
 	
 	public boolean isContained(TimeDuration timeDurationObject) {
-		if (timeDurationObject.getStartTime() > StartTime && timeDurationObject.getStartTime() < EndTime)
+		if ((timeDurationObject.getStartMillis() > StartMillis && 
+			 timeDurationObject.getStartMillis() < EndMillis)
+			|| 
+			(timeDurationObject.getEndMillis() > StartMillis) &&
+			 timeDurationObject.getEndMillis() < EndMillis)
+		{
 			return true;
-		
-		if (timeDurationObject.getEndTime() > StartTime && timeDurationObject.getEndTime() < EndTime)
-			return true;
+		}
 		
 		return false;
 	}
 
 	public List<TimeDuration> subtract(TimeDuration subtractObject) {
-		List<TimeDuration> result = new ArrayList<TimeDuration>();
+		List<TimeDuration> results = new ArrayList<TimeDuration>();
 		
-		if (subtractObject.getDuration() < this.getDuration()) {
-			
-			if (subtractObject.getStartTime() <= this.StartTime) 
-				result.add(new TimeDuration(subtractObject.getEndTime(), this.EndTime));
-			else {
-				result.add(new TimeDuration(this.StartTime, subtractObject.getStartTime()));
-				if (subtractObject.getEndTime() < this.EndTime) 
-					result.add(new TimeDuration(subtractObject.EndTime, this.EndTime));
-			}
-			
+		if (subtractObject.getStartMillis() >= StartMillis + getDuration()) {
+			results.add(new TimeDuration(StartMillis, subtractObject.getStartMillis()));
 		}
 		
-		return result;
+		if (subtractObject.getEndMillis() <= EndMillis - getDuration()) {
+			results.add(new TimeDuration(subtractObject.getEndMillis(), EndMillis));
+		}
+
+		return results;
 	}
 }

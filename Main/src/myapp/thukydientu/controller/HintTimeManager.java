@@ -13,37 +13,23 @@ import myapp.thukydientu.util.TodoUtils;
 import android.app.Activity;
 
 public class HintTimeManager {
-	private long startTime;
-	private long endTime;
-	private int startDate;
-	private int endDate;
-	private long duration;
+	private Calendar Start;
+	private Calendar End;
+	private long Duration;
+	private List<TimeDuration> listHint;
 	
-	public HintTimeManager() {
+	public HintTimeManager(Calendar startTime, Calendar endTime, long duration) {
+		Start = startTime;
 		
-	}
-	public HintTimeManager(long startTime, long endTime, int startDate, int endDate, long duration) {
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.duration = duration;
-	}
-	
-	public int[] getListDays() {
-		final int count = endDate - startDate + 1;
-		int[] days = new int[count];
+		End = endTime;
 		
-		for (int i = 0; i < count; i ++) {
-			days[i] = startDate + i;
-		}
+		this.Duration = duration;
 		
-		return days;
+		listHint = new ArrayList<TimeDuration>();
+		listHint.add(new TimeDuration(Start.getTimeInMillis(), End.getTimeInMillis()));
 	}
 	
-	public List<TimeDuration> getHintTimeByDay(Activity activity, int dayOfMonth) {
-		List<TimeDuration> hints = new ArrayList<TimeDuration>();
-		hints.add(new TimeDuration(this.startTime, this.endTime));
+	public List<TimeDuration> getHintTimeByDay(Activity activity,  int dayOfMonth) {
 		
 		List<Schedule> listSchedule = ScheduleUtils.getListScheduleByDay(activity, dayOfMonth);
 		for (Schedule schedule : listSchedule) {
