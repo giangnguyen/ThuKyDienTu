@@ -72,7 +72,7 @@ public class TodoAdapter extends CursorAdapter {
 				null, 
 				TKDTProvider.TODO_CONTENT_URI, 
 				TodoTable.PROJECTION, 
-				null, 
+				TodoTable.DELETED + "=0", 
 				null, 
 				TodoTable.DATE_START + " ASC");
 	}

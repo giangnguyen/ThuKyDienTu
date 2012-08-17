@@ -320,8 +320,8 @@ public class WebservicesUtils {
 		request.addProperty(TodoTable.ALARM, todo.getAlarm());
 		request.addProperty(TodoTable.DATE_SET, todo.getDateSet());
 		request.addProperty(TodoTable.MODIFIED, todo.getModified());
-		request.addProperty(TodoTable.CHANGED, todo.getChanged());
 		request.addProperty(TodoTable.DELETED, todo.getDeleted());
+		request.addProperty(TodoTable.CHANGED, todo.getChanged());
 
 		return callWebServices(SYNC_TODO_ACTION, request);
 	}

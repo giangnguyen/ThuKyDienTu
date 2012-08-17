@@ -3,8 +3,10 @@ package myapp.thukydientu.view;
 import java.util.Calendar;
 
 import myapp.thukydientu.R;
+import myapp.thukydientu.database.TodoTable;
 import myapp.thukydientu.model.IConstants;
 import myapp.thukydientu.model.Todo;
+import myapp.thukydientu.provider.TKDTProvider;
 import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.TodoUtils;
 import android.app.Activity;
@@ -19,7 +21,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -95,8 +96,9 @@ public class TodoAddActivity extends Activity {
 		
 		mBundle = getIntent().getExtras();
 		if (mBundle != null) {
-			Uri uriId = ContentUris.withAppendedId(IConstants.event.CONTENT_URI, mBundle.getLong(IConstants._ID));
-			Cursor cursor = managedQuery(uriId, IConstants.event.PROJECTION, null, null, null);
+			final long id = mBundle.getLong(IConstants._ID);
+			Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, id);
+			Cursor cursor = managedQuery(uriId, TodoTable.PROJECTION, null, null, null);
 			fillExistData(cursor);
 			Flag_Add = false;
 		} else 
@@ -151,8 +153,8 @@ public class TodoAddActivity extends Activity {
 					mTodo.setChanged(1);
 					mTodo.setDeleted(0);
 					TodoUtils.insert(TodoAddActivity.this, mTodo);
-					long id = TodoUtils.getEventIdByTodo(TodoAddActivity.this, mTodo);
-					Log.d("TodoAddActivity", "eventId: " + id);
+//					long id = TodoUtils.getEventIdByTodo(TodoAddActivity.this, mTodo);
+//					Log.d("TodoAddActivity", "eventId: " + id);
 					finish();
 				}
 			}
@@ -163,18 +165,18 @@ public class TodoAddActivity extends Activity {
 	private void fillExistData(Cursor cursor) {
 		if (!cursor.moveToFirst()) 
 			return;
-		mEvent.setText(cursor.getString(IConstants.event.TITLE_COLUMN_INDEX));
-		mDescription.setText(cursor.getString(IConstants.event.DESCRIPTION_COLUMN_INDEX));
+		mEvent.setText(cursor.getString(TodoTable.TITLE_COLUMN_INDEX));
+		mDescription.setText(cursor.getString(TodoTable.WORK_COLUMN_INDEX));
 		
-		final String startDateString = cursor.getString(IConstants.event.DATE_START_COLUMN_INDEX);
+		final String startDateString = cursor.getString(TodoTable.DATE_START_COLUMN_INDEX);
 		mCalendarStart = TaleTimeUtils.createCalendarByDateString(startDateString);
 		mDateView.setText(TaleTimeUtils.getDateLable(this, mCalendarStart));
 		mStartTimeView.setText(TaleTimeUtils.getTimeLable(this, mCalendarStart));
 		
-		final String endDateString = cursor.getString(IConstants.event.DATE_END_COLUMN_INDEX);
+		final String endDateString = cursor.getString(TodoTable.DATE_END_COLUMN_INDEX);
 		mCalendarEnd = TaleTimeUtils.createCalendarByDateString(endDateString);
 		mEndTimeView.setText(TaleTimeUtils.getTimeLable(this, mCalendarEnd));
-		mAlarm.setChecked(cursor.getInt(IConstants.event.HAS_ALARM_COLUMN_INDEX) == 0 ? false : true);
+		mAlarm.setChecked(cursor.getInt(TodoTable.ALAMR_COLUMN_INDEX) == 0 ? false : true);
 		mAdd.setText(getString(R.string.save));
 	}
 	

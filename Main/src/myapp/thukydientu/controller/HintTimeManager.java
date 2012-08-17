@@ -29,29 +29,33 @@ public class HintTimeManager {
 		listHint.add(new TimeDuration(Start.getTimeInMillis(), End.getTimeInMillis()));
 	}
 	
+	public HintTimeManager(long startTime, long endTime, int i, int j, int k) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public List<TimeDuration> getHintTimeByDay(Activity activity,  int dayOfMonth) {
 		
-		List<Schedule> listSchedule = ScheduleUtils.getListScheduleByDay(activity, dayOfMonth);
-		for (Schedule schedule : listSchedule) {
-			Calendar calendarStart = TaleTimeUtils.createCalendarByTimeString(schedule.getTime());
-			calendarStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-			final long endTime = startTime + schedule.getLessons() * schedule.getLessonDuration() * 60 * 1000;
-			removeDeadTime(hints, new TimeDuration(startTime, endTime));
-		}
-		
-		List<Todo> listTodo = TodoUtils.getListTodoByDay(activity, dayOfMonth);
-		for (Todo todo : listTodo) {
-			Calendar startTime = TaleTimeUtils.createCalendarByTimeString(timeString)
-			final long startTime = TaleTimeUtils.convert2Milisecond(todo.getTimeFrom());
-			final long endTime = TaleTimeUtils.convert2Milisecond(todo.getTimeUntil());
-			removeDeadTime(hints, new TimeDuration(startTime, endTime));
-		}
-		
-		for (TimeDuration timeDuration : hints) {
-			if (timeDuration.getDuration() < this.duration)
-				hints.remove(timeDuration);
-		}
-		return hints;
+//		List<Schedule> listSchedule = ScheduleUtils.getListScheduleByDay(activity, dayOfMonth);
+//		for (Schedule schedule : listSchedule) {
+//			Calendar calendarStart = TaleTimeUtils.createCalendarByTimeString(schedule.getTime());
+//			calendarStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//			final long endTime = startTime + schedule.getLessons() * schedule.getLessonDuration() * 60 * 1000;
+//			removeDeadTime(hints, new TimeDuration(startTime, endTime));
+//		}
+//		
+//		List<Todo> listTodo = TodoUtils.getListTodoByDay(activity, dayOfMonth);
+//		for (Todo todo : listTodo) {
+//			Calendar startTime = TaleTimeUtils.createCalendarByTimeString(timeString)
+//			final long startTime = TaleTimeUtils.convert2Milisecond(todo.getTimeFrom());
+//			final long endTime = TaleTimeUtils.convert2Milisecond(todo.getTimeUntil());
+//			removeDeadTime(hints, new TimeDuration(startTime, endTime));
+//		}
+//		
+//		for (TimeDuration timeDuration : hints) {
+//			if (timeDuration.getDuration() < this.duration)
+//				hints.remove(timeDuration);
+//		}
+		return listHint;
 	}
 	
 	private void removeDeadTime(List<TimeDuration> list, TimeDuration object) {

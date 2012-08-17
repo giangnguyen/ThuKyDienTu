@@ -150,24 +150,24 @@ public class MainActivity extends TabActivity {
 
 			@Override
 			public void onClick(View arg0) {
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR_OF_DAY, 8);
-				long startTime = cal.getTimeInMillis();
-				cal.set(Calendar.HOUR_OF_DAY, 17);
-				long endTime = cal.getTimeInMillis();
-
-				HintTimeManager hintTimeManager = new HintTimeManager(
-						startTime, endTime, 15, 30, 45 * 60 * 1000);
-				List<TimeDuration> listHint = hintTimeManager.getHintTimeByDay(MainActivity.this, 20);
-				for (TimeDuration timeDuration : listHint) {
-					Log.d("MainActivity + time",
-							"startTime: "
-									+ TaleTimeUtils.getTimeLable(MainActivity.this,
-											timeDuration.getStartTime())
-									+ " endTime: "
-									+ TaleTimeUtils.getTimeLable(MainActivity.this,
-											timeDuration.getEndTime()));
-				}
+//				Calendar cal = Calendar.getInstance();
+//				cal.set(Calendar.HOUR_OF_DAY, 8);
+//				long startTime = cal.getTimeInMillis();
+//				cal.set(Calendar.HOUR_OF_DAY, 17);
+//				long endTime = cal.getTimeInMillis();
+//
+//				HintTimeManager hintTimeManager = new HintTimeManager(
+//						startTime, endTime, 15, 30, 45 * 60 * 1000);
+//				List<TimeDuration> listHint = hintTimeManager.getHintTimeByDay(MainActivity.this, 20);
+//				for (TimeDuration timeDuration : listHint) {
+//					Log.d("MainActivity + time",
+//							"startTime: "
+//									+ TaleTimeUtils.getTimeLable(MainActivity.this,
+//											timeDuration.getStartTime())
+//									+ " endTime: "
+//									+ TaleTimeUtils.getTimeLable(MainActivity.this,
+//											timeDuration.getEndTime()));
+//				}
 			}
 		});
 	

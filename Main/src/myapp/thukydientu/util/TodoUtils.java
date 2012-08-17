@@ -34,8 +34,8 @@ public class TodoUtils {
 			if (TextUtils.isEmpty(todo.getModified()))
 				todo.setModified(time);
 			
-			if (!addEvent(context, todo)) 
-				return FAIL;
+//			if (!addEvent(context, todo)) 
+//				return FAIL;
 			
 			ContentValues values = createContentValues(todo);
 			Log.d("insert", "modified: " + values.getAsString(TodoTable.MODIFIED));
@@ -53,8 +53,8 @@ public class TodoUtils {
 		if (todo == null)
 			return FAIL;
 		
-		if (!updateEvent(context, todo))
-			return FAIL;
+//		if (!updateEvent(context, todo))
+//			return FAIL;
 		
 		// initial values to update
 		if (TextUtils.isEmpty(todo.getModified()))
@@ -102,12 +102,12 @@ public class TodoUtils {
 		
 		if (todo == null) {
 			context.getContentResolver().delete(TKDTProvider.TODO_CONTENT_URI, null, null);
-			deleteEventById(context, -1);
+//			deleteEventById(context, -1);
 		} else {
-			long eventId = getEventIdByTodo(context, todo);
-			final int deleteEvent = deleteEventById(context, eventId);
-			
-			if (deleteEvent > 0) {
+//			long eventId = getEventIdByTodo(context, todo);
+//			final int deleteEvent = deleteEventById(context, eventId);
+//			
+//			if (deleteEvent > 0) {
 				ContentValues values = new ContentValues();
 				values.put(TodoTable.CHANGED, 1);
 				values.put(TodoTable.DELETED, 1);
@@ -115,7 +115,7 @@ public class TodoUtils {
 				
 				Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todo.getId());
 				context.getContentResolver().update(uriId, values, null, null);
-			}
+//			}
 		}
 	}
 	
@@ -351,8 +351,8 @@ public class TodoUtils {
 			if (sync_app.equals("1")) { 
 				final Uri uriId = ContentUris.withAppendedId(TKDTProvider.TODO_CONTENT_URI, todo.getId());
 				if (todo.getDeleted() == 1){
-//					TodoUtils.delete(context, todo.getId());
-					getEventIdByTodo(context, todo);
+					TodoUtils.delete(context, todo);
+//					getEventIdByTodo(context, todo);
 					Log.d("sync", "sync_app result: " + sync_app);
 				}else {
 					ContentValues values = new ContentValues();
