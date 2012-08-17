@@ -123,6 +123,7 @@ public class TodoUtils {
 		// initial values to update
 		ContentValues values = new ContentValues();
 		
+		values.put(TodoTable.USER_ID, todo.getUserId());
 		values.put(TodoTable.DATE_START, todo.getDateStart());
 		values.put(TodoTable.DATE_END, todo.getDateEnd());
 		values.put(TodoTable.TIME_FROM, todo.getTimeFrom());
@@ -260,7 +261,6 @@ public class TodoUtils {
 		Uri uriId = ContentUris.withAppendedId(IConstants.event.CONTENT_URI, id);
 		return context.getContentResolver().delete(uriId, null, null);
 	}
-	
 	
 	public static void bindTodoData(Todo todo, Cursor cursor) {
 		todo.setId(cursor.getLong(TodoTable.ID_COLUMN_INDEX));

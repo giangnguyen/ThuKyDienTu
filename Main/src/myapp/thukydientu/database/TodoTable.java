@@ -9,6 +9,7 @@ public class TodoTable {
 	public static final String TABLE_NAME		= "todo";
 	
 	public static final String _ID 				= "_id";
+	public static final String USER_ID 			= "userid";
 	public static final String DATE_START 		= "datestart";
 	public static final String DATE_END 		= "dateend";
 	public static final String TIME_FROM 		= "timefrom";
@@ -23,35 +24,38 @@ public class TodoTable {
 	
 	public static final String[] PROJECTION = {
 		_ID,			// 0
-		DATE_START, 	// 1
-		DATE_END,		// 2
-		TIME_FROM,		// 3
-		TIME_UNTIL,		// 4
-		TITLE,			// 5
-		WORK,			// 6
-		ALARM,			// 7
-		DATE_SET,		// 8
-		MODIFIED,		// 9
-		CHANGED,		// 10
-		DELETED			// 11
+		USER_ID,		// 1
+		DATE_START, 	// 2
+		DATE_END,		// 3
+		TIME_FROM,		// 4
+		TIME_UNTIL,		// 5
+		TITLE,			// 6
+		WORK,			// 7
+		ALARM,			// 8
+		DATE_SET,		// 9
+		MODIFIED,		// 10
+		CHANGED,		// 11
+		DELETED			// 12
 	};
 	
 	public static final int ID_COLUMN_INDEX 		= 0;
-	public static final int DATE_START_COLUMN_INDEX	= 1;
-	public static final int DATE_END_COLUMN_INDEX 	= 2;
-	public static final int TIME_FROM_COLUMN_INDEX 	= 3;
-	public static final int TIME_UNTIL_COLUMN_INDEX = 4;
-	public static final int TITLE_COLUMN_INDEX 		= 5;
-	public static final int WORK_COLUMN_INDEX 		= 6;
-	public static final int ALAMR_COLUMN_INDEX 		= 7;
-	public static final int DATE_SET_COLUMN_INDEX 	= 8;
-	public static final int MODIFIED_COLUMN_INDEX 	= 9;
-	public static final int CHANGED_COLUMN_INDEX	= 10;
-	public static final int DELETED_COLUMN_INDEX	= 11;
+	public static final int USER_ID_COLUMN_INDEX	= ID_COLUMN_INDEX + 1;
+	public static final int DATE_START_COLUMN_INDEX	= USER_ID_COLUMN_INDEX + 1;
+	public static final int DATE_END_COLUMN_INDEX 	= DATE_START_COLUMN_INDEX + 1;
+	public static final int TIME_FROM_COLUMN_INDEX 	= DATE_END_COLUMN_INDEX + 1;
+	public static final int TIME_UNTIL_COLUMN_INDEX = TIME_FROM_COLUMN_INDEX + 1;
+	public static final int TITLE_COLUMN_INDEX 		= TIME_UNTIL_COLUMN_INDEX + 1;
+	public static final int WORK_COLUMN_INDEX 		= TITLE_COLUMN_INDEX + 1;
+	public static final int ALAMR_COLUMN_INDEX 		= WORK_COLUMN_INDEX + 1;
+	public static final int DATE_SET_COLUMN_INDEX 	= ALAMR_COLUMN_INDEX + 1;
+	public static final int MODIFIED_COLUMN_INDEX 	= DATE_SET_COLUMN_INDEX + 1;
+	public static final int CHANGED_COLUMN_INDEX	= MODIFIED_COLUMN_INDEX + 1;
+	public static final int DELETED_COLUMN_INDEX	= CHANGED_COLUMN_INDEX + 1;
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME + " ("
 			+ _ID 			+ " INTEGER primary key autoincrement," 
+			+ USER_ID 		+ " INTEGER,"
 			+ DATE_START 	+ " VARCHAR(8),"
 			+ DATE_END 		+ " VARCHAR(8),"
 			+ TIME_FROM 	+ " VARCHAR(6),"

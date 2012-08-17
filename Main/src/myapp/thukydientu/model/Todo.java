@@ -5,17 +5,18 @@ import java.util.Date;
 
 public class Todo {
 	private long Id;
-	private String dateStart;
-	private String dateEnd;
-	private String timeFrom;
-	private String timeUntil;
-	private String title;
-	private String work;
-	private int alarm;
-	private String dateSet;
-	private String modified;
-	private int changed;
-	private int deleted;
+	private int UserId;
+	private String DateStart;
+	private String DateEnd;
+	private String TimeFrom;
+	private String TimeUntil;
+	private String Title;
+	private String Work;
+	private int Alarm;
+	private String DateSet;
+	private String Modified;
+	private int Changed;
+	private int Deleted;
 	
 	public Todo() {
 		Id = -1;
@@ -29,85 +30,93 @@ public class Todo {
 		this.Id = Id;
 	}
 	public String getDateStart() {
-		return dateStart;
+		return DateStart;
 	}
-	public void setDateStart(String dateStart) {
-		this.dateStart = dateStart;
+	public void setDateStart(String DateStart) {
+		this.DateStart = DateStart;
 	}
 	public String getDateEnd() {
-		return dateEnd;
+		return DateEnd;
 	}
-	public void setDateEnd(String dateEnd) {
-		this.dateEnd = dateEnd;
+	public void setDateEnd(String DateEnd) {
+		this.DateEnd = DateEnd;
 	}
 	public String getTimeFrom() {
-		return timeFrom;
+		return TimeFrom;
 	}
-	public void setTimeFrom(String timeFrom) {
-		this.timeFrom = timeFrom;
+	public void setTimeFrom(String TimeFrom) {
+		this.TimeFrom = TimeFrom;
 	}
 	public String getTimeUntil() {
-		return timeUntil;
+		return TimeUntil;
 	}
-	public void setTimeUntil(String timeUntil) {
-		this.timeUntil = timeUntil;
+	public void setTimeUntil(String TimeUntil) {
+		this.TimeUntil = TimeUntil;
 	}
 	public String getTitle() {
-		return title;
+		return Title;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setTitle(String Title) {
+		this.Title = Title;
 	}
 	public String getWork() {
-		return work;
+		return Work;
 	}
-	public void setWork(String work) {
-		this.work = work;
+	public void setWork(String Work) {
+		this.Work = Work;
 	}
 	public int getAlarm() {
-		return alarm;
+		return Alarm;
 	}
-	public void setAlarm(int alarm) {
-		this.alarm = alarm;
+	public void setAlarm(int Alarm) {
+		this.Alarm = Alarm;
 	}
 	public String getDateSet() {
-		return dateSet;
+		return DateSet;
 	}
-	public void setDateSet(String dateSet) {
-		this.dateSet = dateSet;
+	public void setDateSet(String DateSet) {
+		this.DateSet = DateSet;
 	}
 	public void setDateSet(long milisecond) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		this.dateSet = sdf.format(new Date(milisecond));
+		this.DateSet = sdf.format(new Date(milisecond));
 	}
 
 	public String getModified() {
-		return modified;
+		return Modified;
 	}
 
-	public void setModified(String modified) {
-		this.modified = modified;
+	public void setModified(String Modified) {
+		this.Modified = Modified;
 	}
 	
 	public void setModified(long milisecond) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		this.modified = sdf.format(new Date(milisecond));
+		this.Modified = sdf.format(new Date(milisecond));
 	}
 
 	public int getDeleted() {
-		return deleted;
+		return Deleted;
 	}
 
-	public void setDeleted(int deleted) {
-		this.deleted = deleted;
+	public void setDeleted(int Deleted) {
+		this.Deleted = Deleted;
 	}
 
 	public int getChanged() {
-		return changed;
+		return Changed;
 	}
 
-	public void setChanged(int changed) {
-		this.changed = changed;
+	public void setChanged(int Changed) {
+		this.Changed = Changed;
+	}
+
+	public int getUserId() {
+		return UserId;
+	}
+
+	public void setUserId(int userId) {
+		UserId = userId;
 	}
 }
