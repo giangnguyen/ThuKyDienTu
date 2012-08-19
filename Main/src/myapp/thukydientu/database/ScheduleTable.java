@@ -10,9 +10,10 @@ public class ScheduleTable {
 
 	// schedule's constants
 	public static final String _ID = "_id";
+	public static final String USER_ID = "userid";
 	public static final String DATE_SET = "dateset";
 	public static final String CREATED = "created";
-	public static final String DATE_NAME = "datename";
+	public static final String DAY_NAME = "datename";
 	public static final String TIME = "time";
 	public static final String SUBJECT = "subject";
 	public static final String CLASS = "class";
@@ -24,37 +25,40 @@ public class ScheduleTable {
 	public static final String DELETED = "deleted";
 
 	public static final String[] PROJECTION = { 
-			_ID, // 0
-			DATE_NAME, // 1
-			DATE_SET, // 2
-			TIME, // 3
-			SUBJECT, // 4
-			CLASS, // 5
-			SCHOOL, // 6
-			MODIFIED, // 7
-			CHANGED, // 8
-			LESSON, // 9
-			LESSON_DURATION, // 10
-			DELETED // 11
+			_ID, 				// 0
+			USER_ID,			// 1
+			DAY_NAME, 			// 2
+			DATE_SET, 			// 3
+			TIME, 				// 4
+			SUBJECT, 			// 5
+			CLASS, 				// 6
+			SCHOOL, 			// 7
+			MODIFIED, 			// 8
+			CHANGED, 			// 9
+			LESSON, 			// 10
+			LESSON_DURATION, 	// 11
+			DELETED 			// 12
 	};
 
-	public static final int ID_COLUMN_INDEX = 0;
-	public static final int DATE_NAME_COLUMN_INDEX = 1;
-	public static final int DATE_SET_COLUMN_INDEX = 2;
-	public static final int TIME_COLUMN_INDEX = 3;
-	public static final int SUBJECT_COLUMN_INDEX = 4;
-	public static final int CLASS_COLUMN_INDEX = 5;
-	public static final int SCHOOL_COLUMN_INDEX = 6;
-	public static final int MODIFIED_COLUMN_INDEX = 7;
-	public static final int CHANGE_COLUMN_INDEX = 8;
-	public static final int LESSON_COLUMN_INDEX = 9;
-	public static final int LESSON_DURATION_COLUMN_INDEX = 10;
-	public static final int DELETED_COLUMN_INDEX = 11;
+	public static final int ID_COLUMN_INDEX 			= 0;
+	public static final int USER_ID_COLUMN_INDEX 		= ID_COLUMN_INDEX + 1;
+	public static final int DATE_NAME_COLUMN_INDEX 		= USER_ID_COLUMN_INDEX + 1;
+	public static final int DATE_SET_COLUMN_INDEX 		= DATE_NAME_COLUMN_INDEX + 1;
+	public static final int TIME_COLUMN_INDEX 			= DATE_SET_COLUMN_INDEX + 1;
+	public static final int SUBJECT_COLUMN_INDEX 		= TIME_COLUMN_INDEX + 1;
+	public static final int CLASS_COLUMN_INDEX 			= SUBJECT_COLUMN_INDEX + 1;
+	public static final int SCHOOL_COLUMN_INDEX 		= CLASS_COLUMN_INDEX + 1;
+	public static final int MODIFIED_COLUMN_INDEX 		= SCHOOL_COLUMN_INDEX + 1;
+	public static final int CHANGE_COLUMN_INDEX 		= MODIFIED_COLUMN_INDEX + 1;
+	public static final int LESSON_COLUMN_INDEX 		= CHANGE_COLUMN_INDEX + 1;
+	public static final int LESSON_DURATION_COLUMN_INDEX = LESSON_COLUMN_INDEX + 1;
+	public static final int DELETED_COLUMN_INDEX 		= LESSON_DURATION_COLUMN_INDEX + 1;
 
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME + " (" 
 			+ _ID + " INTEGER primary key autoincrement," 
-			+ DATE_NAME 		+ " INTEGER,"
+			+ USER_ID 			+ " INTEGER,"
+			+ DAY_NAME 		+ " INTEGER,"
 			+ TIME 				+ " VARCHAR(6),"
 			+ SUBJECT 			+ " VARCHAR(250),"
 			+ CLASS 			+ " VARCHAR(250),"
@@ -66,8 +70,8 @@ public class ScheduleTable {
 			+ LESSON_DURATION	+ " INTEGER,"
 			+ CHANGED 			+ " INTEGER);";
 
-	public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + TABLE_NAME;
-	public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + TABLE_NAME;
+	public static final String CONTENT_TYPE 		= ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + TABLE_NAME;
+	public static final String CONTENT_ITEM_TYPE 	= ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + TABLE_NAME;
 
 	public static void onCreate(SQLiteDatabase database) {
 

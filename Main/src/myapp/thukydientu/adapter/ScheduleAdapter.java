@@ -6,9 +6,13 @@ import myapp.thukydientu.R;
 import myapp.thukydientu.database.DayOfWeekTable;
 import myapp.thukydientu.database.ScheduleTable;
 import myapp.thukydientu.model.IConstants;
+import myapp.thukydientu.model.Schedule;
+import myapp.thukydientu.model.Todo;
 import myapp.thukydientu.provider.TKDTProvider;
 import myapp.thukydientu.util.ScheduleUtils;
 import myapp.thukydientu.util.TaleTimeUtils;
+import myapp.thukydientu.util.TodoUtils;
+import myapp.thukydientu.view.MainActivity;
 import myapp.thukydientu.view.ScheduleAddActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -83,7 +87,6 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 
 	class ChildHolder {
 
-		long id;
 		Button edit;
 		Button delete;
 		TextView date;
@@ -129,12 +132,16 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 		// that group
 		// Return a cursor that points to schedules of this day
 
-		final int dateName = groupCursor
-				.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
-		mQueryHandler.startQuery(TOKEN_CHILD, groupCursor.getPosition(),
-				TKDTProvider.SCHEDULE_CONTENT_URI, ScheduleTable.PROJECTION,
-				ScheduleTable.DATE_NAME + "=" + dateName + " AND "
-						+ ScheduleTable.DELETED + "=0", null, null);
+		final int dateName = groupCursor.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
+		
+		mQueryHandler.startQuery(
+				TOKEN_CHILD, 
+				groupCursor.getPosition(),
+				TKDTProvider.SCHEDULE_CONTENT_URI, 
+				ScheduleTable.PROJECTION, 
+				ScheduleUtils.queryString_AllByDateName(dateName),
+				null, 
+				ScheduleTable.TIME + " ASC");
 
 		return null;
 	}
@@ -145,17 +152,16 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 
 		ChildHolder holder = (ChildHolder) view.getTag();
 
-		final long Id = cursor.getLong(ScheduleTable.ID_COLUMN_INDEX);
+		final Schedule schedule = new Schedule();
+		ScheduleUtils.bindScheduleData(schedule, cursor);
+		
+		Calendar calendar = TaleTimeUtils.createCalendarByTimeString(schedule.getTime());
 
-		final String timeString = cursor.getString(ScheduleTable.TIME_COLUMN_INDEX);
-		Calendar calendar = TaleTimeUtils.createCalendarByTimeString(timeString);
-
-		holder.id = cursor.getLong(ScheduleTable.ID_COLUMN_INDEX);
 		holder.date.setText(getPeriodOfDay(calendar));
 		holder.time.setText(TaleTimeUtils.getTimeLable(context,	calendar));
-		holder.school.setText(cursor.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
-		holder.subject.setText(cursor.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
-		holder.className.setText(cursor.getString(ScheduleTable.CLASS_COLUMN_INDEX));
+		holder.school.setText(schedule.getSchoolName());
+		holder.subject.setText(schedule.getSubject());
+		holder.className.setText(schedule.getClassName());
 
 		holder.edit.setOnClickListener(new View.OnClickListener() {
 
@@ -164,7 +170,7 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 
 				Intent intent = new Intent(mContext, ScheduleAddActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putLong(IConstants._ID, Id);
+				bundle.putLong(IConstants._ID, schedule.getId());
 				intent.putExtras(bundle);
 				((Activity) mContext).startActivityForResult(intent, 1);
 			}
@@ -183,21 +189,13 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(
-											DialogInterface dialog,
-											int which) {
-
-										ScheduleUtils.delete(
-												(Activity) mContext, Id);
+									public void onClick(DialogInterface dialog,	int which) {
+										ScheduleUtils.delete(mContext, schedule);
 									}
 								})
-						.setNegativeButton("Hủy",
-								new DialogInterface.OnClickListener() {
-
+						.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
 									@Override
-									public void onClick(
-											DialogInterface dialog,
-											int which) {
+									public void onClick(DialogInterface dialog,	int which) {
 
 									}
 								});
@@ -225,7 +223,7 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 				Intent intent = new Intent(mContext,
 						ScheduleAddActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putInt(ScheduleTable.DATE_NAME, dayOfWeek);
+				bundle.putInt(ScheduleTable.DAY_NAME, dayOfWeek);
 				intent.putExtras(bundle);
 				((Activity) mContext).startActivityForResult(intent, 1);
 			}
@@ -234,7 +232,7 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 		Cursor childCursor = context.getContentResolver().query(
 				TKDTProvider.SCHEDULE_CONTENT_URI,
 				ScheduleTable.PROJECTION,
-				ScheduleTable.DATE_NAME + "=" + dayOfWeek + " AND "
+				ScheduleTable.DAY_NAME + "=" + dayOfWeek + " AND "
 						+ ScheduleTable.DELETED + "=0", null, null);
 		final int count = childCursor.getCount();
 		if (count > 0)

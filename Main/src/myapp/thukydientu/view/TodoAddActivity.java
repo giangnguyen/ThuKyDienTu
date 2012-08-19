@@ -240,8 +240,6 @@ public class TodoAddActivity extends Activity {
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									long Id = TodoUtils.getId(TodoAddActivity.this, mTodo.getDateStart(), mTodo.getTimeFrom(), mTodo.getTimeUntil());
-									mTodo.setId(Id);
 									TodoUtils.update(TodoAddActivity.this, mTodo);
 								}
 							})

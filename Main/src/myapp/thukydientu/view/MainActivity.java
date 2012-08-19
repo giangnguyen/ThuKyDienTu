@@ -1,16 +1,11 @@
 package myapp.thukydientu.view;
 
-import java.util.Calendar;
-import java.util.List;
-
 import myapp.thukydientu.R;
-import myapp.thukydientu.controller.HintTimeManager;
+import myapp.thukydientu.controller.Connection;
 import myapp.thukydientu.model.IConstants;
-import myapp.thukydientu.model.TimeDuration;
 import myapp.thukydientu.service.SyncService;
 import myapp.thukydientu.util.AndroidUtil;
 import myapp.thukydientu.util.FileUtils;
-import myapp.thukydientu.util.TaleTimeUtils;
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
@@ -21,7 +16,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -171,10 +165,12 @@ public class MainActivity extends TabActivity {
 			}
 		});
 	
-		Intent intent = new Intent(MainActivity.this, SyncService.class);
-		intent.putExtra(IConstants.User.ID, sUserId);
-		intent.putExtra(IConstants.DataType.DATA_TYPE, IConstants.DataType.ALL);
-		startService(intent);
+		if (Connection.isInternetConnected(MainActivity.this)) {
+			Intent intent = new Intent(MainActivity.this, SyncService.class);
+			intent.putExtra(IConstants.User.ID, sUserId);
+			intent.putExtra(IConstants.DataType.DATA_TYPE, IConstants.DataType.ALL);
+			startService(intent);
+		}
 	}
 
 	public void createTabLayout() {

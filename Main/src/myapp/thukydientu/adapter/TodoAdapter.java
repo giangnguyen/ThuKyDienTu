@@ -9,6 +9,7 @@ import myapp.thukydientu.model.Todo;
 import myapp.thukydientu.provider.TKDTProvider;
 import myapp.thukydientu.util.TaleTimeUtils;
 import myapp.thukydientu.util.TodoUtils;
+import myapp.thukydientu.view.MainActivity;
 import myapp.thukydientu.view.TodoAddActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,20 +60,13 @@ public class TodoAdapter extends CursorAdapter {
 		mContext = context;
 		
 		QueryHandler queryHandler = new QueryHandler(context, this);
-//		queryHandler.startQuery(
-//				userId, 
-//				null, 
-//				event.CONTENT_URI, 
-//				event.PROJECTION, 
-//				event.CALENDAR_ID + "=" + event.CALENDAR, 
-//				null, 
-//				event.DATE_START + " ASC");
 		queryHandler.startQuery(
 				userId, 
 				null, 
 				TKDTProvider.TODO_CONTENT_URI, 
 				TodoTable.PROJECTION, 
-				TodoTable.DELETED + "=0", 
+				TodoTable.USER_ID + "=" + MainActivity.sUserId + " AND " +
+				TodoTable.DELETED + "=" + 0, 
 				null, 
 				TodoTable.DATE_START + " ASC");
 	}

@@ -6,33 +6,24 @@ import java.util.Date;
 
 public class Schedule {
 	private long Id;
+	private int UserId;
 	private String DateSet;
-	private String modified;
+	private String Modified;
 	private int DayName;
 	private String Time;
 	private String Subject;
 	private String ClassName;
 	private String SchoolName;
-	private int changed;
-	private int deleted;
-	private int lessons;
-	private int lessonDuration;
+	private int Changed;
+	private int Deleted;
+	private int Lessons;
+	private int LessonDuration;
 	
 	public Schedule() {
-		modified = "";
+		Modified = "";
 		DateSet = "";
 	}
 	
-	public Schedule(long Id, int dayName, String time, String dateSet, String subject, String className, String schoolName) {
-		this.Id = Id;
-		this.DayName = dayName;
-		this.Time = time;
-		this.DateSet = dateSet;
-		this.Subject = subject;
-		this.ClassName = className;
-		this.SchoolName = schoolName;
-	}
-
 	public long getId() {
 		return Id;
 	}
@@ -93,48 +84,56 @@ public class Schedule {
 	}
 	
 	public String getModified() {
-		return modified;
+		return Modified;
 	}
 
-	public void setModified(String modified) {
-		this.modified = modified;
+	public void setModified(String Modified) {
+		this.Modified = Modified;
 	}
 	
 	public void setModified(long milisecond) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		this.modified = sdf.format(new Date(milisecond));
+		this.Modified = sdf.format(new Date(milisecond));
 	}
 
 	public int getChanged() {
-		return changed;
+		return Changed;
 	}
 
-	public void setChanged(int changed) {
-		this.changed = changed;
+	public void setChanged(int Changed) {
+		this.Changed = Changed;
 	}
 
 	public int getDeleted() {
-		return deleted;
+		return Deleted;
 	}
 
-	public void setDeleted(int deleted) {
-		this.deleted = deleted;
+	public void setDeleted(int Deleted) {
+		this.Deleted = Deleted;
 	}
 
 	public int getLessons() {
-		return lessons;
+		return Lessons;
 	}
 
-	public void setLessons(int lessons) {
-		this.lessons = lessons;
+	public void setLessons(int Lessons) {
+		this.Lessons = Lessons;
 	}
 
 	public int getLessonDuration() {
-		return lessonDuration;
+		return LessonDuration;
 	}
 
-	public void setLessonDuration(int lessonDuration) {
-		this.lessonDuration = lessonDuration;
+	public void setLessonDuration(int LessonDuration) {
+		this.LessonDuration = LessonDuration;
+	}
+
+	public int getUserId() {
+		return UserId;
+	}
+
+	public void setUserId(int userId) {
+		UserId = userId;
 	}
 
 }

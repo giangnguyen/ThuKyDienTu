@@ -69,9 +69,7 @@ public class ScheduleListActivity extends ExpandableListActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-
-									ScheduleUtils.delete(
-											ScheduleListActivity.this, -1);
+									ScheduleUtils.delete(ScheduleListActivity.this, null);
 								}
 							})
 					.setNegativeButton("Hủy",
@@ -96,10 +94,6 @@ public class ScheduleListActivity extends ExpandableListActivity {
 	protected void onDestroy() {
 
 		super.onDestroy();
-
-		// Null out the group cursor. This will cause the group cursor and all
-		// of the child cursors
-		// to be closed.
 		mAdapter.changeCursor(null);
 		mAdapter = null;
 	}

@@ -96,11 +96,10 @@ public class ScheduleShareAdapter extends BaseExpandableListAdapter {
 			@Override
 			public void onClick(View v) {
 				final int result = ScheduleUtils.insert((Activity) mContext, schedule);
-				if (result == ScheduleUtils.FAIL)
+				if (result == ScheduleUtils.RESULT_FAIL)
 					Toast.makeText(mContext, "Thêm thất bại!", Toast.LENGTH_LONG).show();
 				if (result == ScheduleUtils.REQUEST_TO_UPDATE) {
-					final long Id = ScheduleUtils.getId((Activity) mContext, schedule.getDayName(), schedule.getTime());
-					ScheduleUtils.update((Activity) mContext, schedule, Id);
+					ScheduleUtils.update(mContext, schedule);
 					Toast.makeText(mContext, "Cập nhật thành công!", Toast.LENGTH_LONG).show();
 				} else 
 					Toast.makeText(mContext, "Thêm thành công", Toast.LENGTH_LONG).show();

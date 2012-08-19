@@ -280,12 +280,11 @@ public class WebservicesUtils {
 		SoapObject request = new SoapObject(NAMESPACE, SYNC_SCHEDULE_METHOD);
 
 		request.addProperty(IConstants.User.ID, userId);
-		request.addProperty(ScheduleTable.DATE_NAME, schedule.getDayName());
+		request.addProperty(ScheduleTable.DAY_NAME, schedule.getDayName());
 		request.addProperty(ScheduleTable.TIME, schedule.getTime());
 		request.addProperty(ScheduleTable.SUBJECT, schedule.getSubject());
 		request.addProperty(ScheduleTable.CLASS, schedule.getClassName());
 		request.addProperty(ScheduleTable.SCHOOL, schedule.getSchoolName());
-		request.addProperty(ScheduleTable.CREATED, schedule.getDateSet());
 		request.addProperty(ScheduleTable.MODIFIED, schedule.getModified());
 		request.addProperty(ScheduleTable.DELETED, schedule.getDeleted());
 		request.addProperty(ScheduleTable.CHANGED, schedule.getChanged());
@@ -377,7 +376,7 @@ public class WebservicesUtils {
 		// make request
 		SoapObject request = new SoapObject(NAMESPACE, ADD_SCHEDULE_METHOD);
 		request.addProperty(IConstants.User.ID, userId);
-		request.addProperty(ScheduleTable.DATE_NAME, dateName);
+		request.addProperty(ScheduleTable.DAY_NAME, dateName);
 		request.addProperty(ScheduleTable.TIME, time);
 		request.addProperty(ScheduleTable.SUBJECT, subject);
 		request.addProperty(ScheduleTable.CLASS, className);
@@ -392,7 +391,7 @@ public class WebservicesUtils {
 		SoapObject request = new SoapObject(NAMESPACE, UPDATE_SCHEDULE_METHOD);
 		request.addProperty(IConstants.User.ID, userId);
 		request.addProperty(IConstants.WebServices.SCHEDULE_ID, id);
-		request.addProperty(ScheduleTable.DATE_NAME, datename);
+		request.addProperty(ScheduleTable.DAY_NAME, datename);
 		request.addProperty(ScheduleTable.TIME, time);
 		request.addProperty(ScheduleTable.SUBJECT, subject);
 		request.addProperty(ScheduleTable.SCHOOL, school);

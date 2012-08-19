@@ -115,7 +115,7 @@ public class ScheduleAddActivity extends Activity {
 		oldId = bundle.getLong(IConstants._ID);
 		if (oldId == 0) {
 			isEdit = false;
-			mDateName = bundle.getInt(ScheduleTable.DATE_NAME);
+			mDateName = bundle.getInt(ScheduleTable.DAY_NAME);
 			tViewDayName.setText(TaleTimeUtils.getDayOfWeekString(mDateName));
 			
 			btnTime.setText(TaleTimeUtils.getTimeLable(this, Calendar.getInstance()));
@@ -157,8 +157,8 @@ public class ScheduleAddActivity extends Activity {
 
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									int result = ScheduleUtils.update(ScheduleAddActivity.this, mSchedule, oldId);
-									if (result == ScheduleUtils.SUCCESS) {
+									int result = ScheduleUtils.update(ScheduleAddActivity.this, mSchedule);
+									if (result == ScheduleUtils.RESULT_SUCCESS) {
 										Intent intent = new Intent();
 										intent.putExtra(IConstants.Results.RESULT_RETURN, IConstants.Results.UPDATE_SUCCESS);
 										setResult(IConstants.Results.RESULT_OK, intent);
@@ -285,17 +285,17 @@ public class ScheduleAddActivity extends Activity {
 					
 					if (isEdit) {
 						mSchedule.setDeleted(1);
-						ScheduleUtils.update(ScheduleAddActivity.this, mSchedule, oldId);
+						ScheduleUtils.update(ScheduleAddActivity.this, mSchedule);
 					}
 					mSchedule.setDeleted(0);
 					final int result = ScheduleUtils.insert(ScheduleAddActivity.this, mSchedule);
 										
-					if (result == ScheduleUtils.SUCCESS) {
+					if (result == ScheduleUtils.RESULT_SUCCESS) {
 						Intent intent = new Intent();
 						intent.putExtra(IConstants.Results.RESULT_RETURN, IConstants.Results.INSERT_SUCCESS);
 						setResult(IConstants.Results.RESULT_OK, intent);
 						finish();
-					} else if (result == ScheduleUtils.FAIL)
+					} else if (result == ScheduleUtils.RESULT_FAIL)
 						showDialog(INSERT_ERROR_DIALOG);
 					else if (result == ScheduleUtils.REQUEST_TO_UPDATE)
 						showDialog(REQUEST_TO_UPDATE);

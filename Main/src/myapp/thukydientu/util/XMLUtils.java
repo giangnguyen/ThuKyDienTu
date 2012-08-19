@@ -200,7 +200,7 @@ public class XMLUtils {
 				Schedule schedule = new Schedule();
 				
 				// dateName
-				scheduleElement = elm.getElementsByTagName(ScheduleTable.DATE_NAME).item(0);
+				scheduleElement = elm.getElementsByTagName(ScheduleTable.DAY_NAME).item(0);
 				childNode = scheduleElement.getFirstChild();
 				if (childNode == null) 
 					tmp = "1";
