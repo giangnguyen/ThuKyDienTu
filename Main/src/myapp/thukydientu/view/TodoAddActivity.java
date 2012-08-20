@@ -153,8 +153,6 @@ public class TodoAddActivity extends Activity {
 					mTodo.setChanged(1);
 					mTodo.setDeleted(0);
 					TodoUtils.insert(TodoAddActivity.this, mTodo);
-//					long id = TodoUtils.getEventIdByTodo(TodoAddActivity.this, mTodo);
-//					Log.d("TodoAddActivity", "eventId: " + id);
 					finish();
 				}
 			}

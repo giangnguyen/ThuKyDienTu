@@ -31,6 +31,8 @@ public class XMLUtils {
 
 	private static Document parseXml2Document(String xml) {
 
+		String clean = xml.replace( "&", "&amp;" );
+
 		Document dom;
 		// get the factory
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -41,7 +43,7 @@ public class XMLUtils {
 
 			// parse using builder to get DOM representation of the XML file
 			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader(xml));
+			is.setCharacterStream(new StringReader(clean));
 			dom = db.parse(is);
 
 		} catch (ParserConfigurationException pce) {

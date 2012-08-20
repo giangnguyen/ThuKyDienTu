@@ -132,7 +132,7 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 		// that group
 		// Return a cursor that points to schedules of this day
 
-		final int dateName = groupCursor.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
+		final int dateName = groupCursor.getInt(1);
 		
 		mQueryHandler.startQuery(
 				TOKEN_CHILD, 
@@ -210,8 +210,7 @@ public class ScheduleAdapter extends CursorTreeAdapter {
 
 		final GroupHolder holder = getGroupHolder(view);
 
-		final int dayOfWeek = cursor
-				.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
+		final int dayOfWeek = cursor.getInt(1);
 
 		holder.dateName.setText(TaleTimeUtils.getDayOfWeekString(dayOfWeek));
 

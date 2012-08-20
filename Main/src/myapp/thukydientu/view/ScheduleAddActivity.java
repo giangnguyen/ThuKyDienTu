@@ -240,16 +240,21 @@ public class ScheduleAddActivity extends Activity {
 
 	private void showAlreadyData() {
 		Cursor cursor = getCursor(oldId);
+		if (!cursor.moveToFirst())
+			return;
+		Schedule schedule = new Schedule();
+		ScheduleUtils.bindScheduleData(schedule, cursor);
 		if (cursor.moveToFirst()) {
 			do {
-				mDateName = cursor.getInt(ScheduleTable.DATE_NAME_COLUMN_INDEX);
+				mDateName = schedule.getDayName();
 				tViewDayName.setText(TaleTimeUtils.getDayOfWeekString(mDateName));
-				String timeString = cursor.getString(ScheduleTable.TIME_COLUMN_INDEX);
+				
+				final String timeString = schedule.getTime();
 				mCalendar = TaleTimeUtils.createCalendarByTimeString(timeString);
 				btnTime.setText(TaleTimeUtils.getTimeLable(ScheduleAddActivity.this, mCalendar));
-				editSchoolName.setText(cursor.getString(ScheduleTable.SCHOOL_COLUMN_INDEX));
-				editClassName.setText(cursor.getString(ScheduleTable.CLASS_COLUMN_INDEX));
-				editSubject.setText(cursor.getString(ScheduleTable.SUBJECT_COLUMN_INDEX));
+				editSchoolName.setText(schedule.getSchoolName());
+				editClassName.setText(schedule.getClassName());
+				editSubject.setText(schedule.getSubject());
 			} while (cursor.moveToNext());
 		}
 	}

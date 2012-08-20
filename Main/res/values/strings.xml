@@ -62,7 +62,7 @@
     <string name="schedule_warning">Thời khóa biểu hiện chưa được lập</string>
 
     <!-- Todo List -->
-    <string name="todo">Thời Gian Biểu</string>
+    <string name="todo">Lịch Làm Việc</string>
     <string name="todo_list_warning">Chưa có sự kiện nào được lập</string>
     <string name="event">Sự kiện</string>
     <string name="start">Bắt đầu</string>
