@@ -35,6 +35,7 @@
 
     <!-- Location -->
     <string name="location">Vị Trí</string>
+    <string name="stop_share_location">Dừng cập nhật vị trí</string>
     <string name="share_location">Chia Sẻ Vị Trí</string>
     <string name="repeat">Lặp Lại</string>
     <string name="inform">Thông Báo</string>

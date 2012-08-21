@@ -26,9 +26,11 @@ public class ShareLocationService extends Service implements LocationListener {
 		return null;
 	}
 
+	private Timer timer;
+	
 	public ShareLocationService(Context context, int minute) {
 		mLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-		Timer timer = new Timer();
+		timer = new Timer();
 		if (minute > 0) {
 			timer.schedule(shareLocationLoop, 0, minute * 60 * 1000);
 		} else {
@@ -81,4 +83,9 @@ public class ShareLocationService extends Service implements LocationListener {
 
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		timer.cancel();
+	}
 }

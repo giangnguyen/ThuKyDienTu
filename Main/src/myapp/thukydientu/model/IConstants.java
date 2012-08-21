@@ -120,6 +120,7 @@ public interface IConstants {
 		public static final String LATITUDE = "lat";
 	    public static final String LONGITUDE = "lng";
 	    public static final String MODE = "isprivate";
+	    public static final String ENABLE = "enable";
 	    public static final String CREATED = "created";
 	}
 	

@@ -99,4 +99,17 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/stop_update_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/selector_button"
+        android:gravity="center"
+        android:text="@string/stop_share_location"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
 </LinearLayout>

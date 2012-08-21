@@ -28,7 +28,7 @@ public class TodoUtils {
 	
 	public static final int RESULT_NOT_EXISTED = -1;
 	
-	public static String queryString_SelectTodo(Todo todo) {
+	public static String queryString_SelectUndeletedTodo(Todo todo) {
 		return
 				TodoTable.USER_ID + "=" + MainActivity.sUserId 
 				+ " AND " +
@@ -41,7 +41,21 @@ public class TodoUtils {
 				TodoTable.TIME_UNTIL + "='" + todo.getTimeUntil()
 				+ "' AND " + 
 				TodoTable.DELETED + "=" + 0
-				;
+			;
+	}
+	
+	public static String queryString_SelectTodo(Todo todo) {
+		return
+				TodoTable.USER_ID + "=" + MainActivity.sUserId 
+				+ " AND " +
+				TodoTable.DATE_START + "='" + todo.getDateStart()
+				+ "' AND " +
+				TodoTable.DATE_END + "='" + todo.getDateEnd()
+				+ "' AND " + 
+				TodoTable.TIME_FROM + "='" + todo.getTimeFrom()
+				+ "' AND " + 
+				TodoTable.TIME_UNTIL + "='" + todo.getTimeUntil() + "'"
+			;
 	}
 	
 	public static String queryString_Changed() {
@@ -68,7 +82,7 @@ public class TodoUtils {
 								.query(
 										TKDTProvider.TODO_CONTENT_URI, 
 										TodoTable.PROJECTION, 
-										queryString_SelectTodo(todo), 
+										queryString_SelectUndeletedTodo(todo), 
 										null, 
 										null
 								);
@@ -92,11 +106,11 @@ public class TodoUtils {
 				e.printStackTrace();
 			}
 			
-			final long time = System.currentTimeMillis();
+			final String DateTimeString = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 			if (TextUtils.isEmpty(todo.getDateSet()))
-				todo.setDateSet(time);
+				todo.setDateSet(DateTimeString);
 			if (TextUtils.isEmpty(todo.getModified()))
-				todo.setModified(time);
+				todo.setModified(DateTimeString);
 			
 			ContentValues values = createContentValues(todo);
 			Log.d("insert", "modified: " + values.getAsString(TodoTable.MODIFIED));
@@ -109,6 +123,25 @@ public class TodoUtils {
 		}
 	}
 	
+	public static void realDelete(Context context, Todo todo) {
+		
+		if (todo == null) { 
+			context.getContentResolver()
+					.delete(
+							TKDTProvider.SCHEDULE_CONTENT_URI, 
+							null, 
+							null
+					);
+		} else {
+			context.getContentResolver()
+					.delete(
+							TKDTProvider.SCHEDULE_CONTENT_URI, 
+							queryString_SelectTodo(todo), 
+							null
+					);
+		}
+		
+	}
 	public static void delete(Context context, Todo todo) {
 
 		ContentValues values = new ContentValues();
@@ -129,12 +162,16 @@ public class TodoUtils {
 			.update(
 				TKDTProvider.TODO_CONTENT_URI, 
 				values, 
-				queryString_SelectTodo(todo), 
+				queryString_SelectUndeletedTodo(todo), 
 				null
 			);
 		}
 		
-		deleteEvent(context, todo);
+		try {
+			deleteEvent(context, todo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static int update(Context context, Todo todo) {
@@ -144,7 +181,11 @@ public class TodoUtils {
 		if (!isExisted(context, todo))
 			return RESULT_FAIL;
 		
-		updateEvent(context, todo);
+		try {
+			updateEvent(context, todo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		// initial values to update
 		ContentValues values = createContentValues(todo);
@@ -153,7 +194,7 @@ public class TodoUtils {
 										.update(
 												TKDTProvider.TODO_CONTENT_URI, 
 												values, 
-												queryString_SelectTodo(todo), 
+												queryString_SelectUndeletedTodo(todo), 
 												null
 										);
 		if (updateResult < 0)
@@ -197,7 +238,7 @@ public class TodoUtils {
 		}
 	}
 	
-	private static boolean addEvent(Context context, Todo todo) {
+	private static boolean addEvent(Context context, Todo todo) throws Exception {
 
 		ContentValues values = new ContentValues();
 		values.put(IConstants.event.CALENDAR_ID, IConstants.event.CALENDAR);
@@ -230,7 +271,7 @@ public class TodoUtils {
 		return true;
 	}
 	
-	private static int deleteEvent(Context context, Todo todo) {
+	private static int deleteEvent(Context context, Todo todo) throws Exception{
 		if (todo == null)
 			return context.getContentResolver().delete(IConstants.event.CONTENT_URI, null, null);
 		
@@ -239,7 +280,7 @@ public class TodoUtils {
 		return context.getContentResolver().delete(uriId, null, null);
 	}
 
-	private static boolean updateEvent(Context context, Todo todo) {
+	private static boolean updateEvent(Context context, Todo todo) throws Exception {
 		
 		ContentValues values = new ContentValues();
 		values.put(IConstants.event.CALENDAR_ID, IConstants.event.CALENDAR);
@@ -380,21 +421,25 @@ public class TodoUtils {
 	}
 	
 	public static Todo getLocalTodo(Context context, Todo serverTodo) {
+		
+		Todo todo = null;
+		
 		final Cursor cursor = context.getContentResolver()
 								.query(
 										TKDTProvider.TODO_CONTENT_URI, 
 										TodoTable.PROJECTION, 
-										queryString_SelectTodo(serverTodo), 
+										queryString_SelectUndeletedTodo(serverTodo), 
 										null, 
 										null
 								);
 		if (cursor.moveToFirst()) {
-			Todo todo = new Todo();
+			todo = new Todo();
 			bindTodoData(todo, cursor);
-			return todo;
 		}
 		
-		return null;
+		closeCursor(cursor);
+		
+		return todo;
 			
 	}
 	

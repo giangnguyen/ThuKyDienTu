@@ -41,6 +41,7 @@ public class ScheduleAddActivity extends Activity {
 	private EditText editSubject;
 	private Button btnAdd;
 
+	private Schedule mOldSchedule;
 	private Schedule mSchedule;
 	private boolean isEdit;
 	private long oldId;
@@ -63,6 +64,7 @@ public class ScheduleAddActivity extends Activity {
 		setContentView(R.layout.schedule_add);
 
 		mSchedule = new Schedule();
+		mCalendar = Calendar.getInstance();
 		
 		// lấy các view dựa vào id
 		tViewDayName = (TextView) findViewById(R.id.date_name);
@@ -240,23 +242,22 @@ public class ScheduleAddActivity extends Activity {
 
 	private void showAlreadyData() {
 		Cursor cursor = getCursor(oldId);
+		
 		if (!cursor.moveToFirst())
 			return;
-		Schedule schedule = new Schedule();
-		ScheduleUtils.bindScheduleData(schedule, cursor);
-		if (cursor.moveToFirst()) {
-			do {
-				mDateName = schedule.getDayName();
-				tViewDayName.setText(TaleTimeUtils.getDayOfWeekString(mDateName));
-				
-				final String timeString = schedule.getTime();
-				mCalendar = TaleTimeUtils.createCalendarByTimeString(timeString);
-				btnTime.setText(TaleTimeUtils.getTimeLable(ScheduleAddActivity.this, mCalendar));
-				editSchoolName.setText(schedule.getSchoolName());
-				editClassName.setText(schedule.getClassName());
-				editSubject.setText(schedule.getSubject());
-			} while (cursor.moveToNext());
-		}
+		
+		mOldSchedule = new Schedule();
+		
+		ScheduleUtils.bindScheduleData(mOldSchedule, cursor);
+		
+		mDateName = mOldSchedule.getDayName();
+		tViewDayName.setText(TaleTimeUtils.getDayOfWeekString(mDateName));
+		String timeString = mOldSchedule.getTime();
+		mCalendar = TaleTimeUtils.createCalendarByTimeString(timeString);
+		btnTime.setText(TaleTimeUtils.getTimeLable(ScheduleAddActivity.this, mCalendar));
+		editSchoolName.setText(mOldSchedule.getSchoolName());
+		editClassName.setText(mOldSchedule.getClassName());
+		editSubject.setText(mOldSchedule.getSubject());
 	}
 
 	private Cursor getCursor(long Id) {
@@ -288,11 +289,9 @@ public class ScheduleAddActivity extends Activity {
 					mSchedule.setSubject(editSubject.getText().toString());
 					mSchedule.setChanged(1);
 					
-					if (isEdit) {
-						mSchedule.setDeleted(1);
-						ScheduleUtils.update(ScheduleAddActivity.this, mSchedule);
-					}
-					mSchedule.setDeleted(0);
+					if (isEdit)
+						ScheduleUtils.delete(ScheduleAddActivity.this, mOldSchedule);
+
 					final int result = ScheduleUtils.insert(ScheduleAddActivity.this, mSchedule);
 										
 					if (result == ScheduleUtils.RESULT_SUCCESS) {

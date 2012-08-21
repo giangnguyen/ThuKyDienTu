@@ -23,7 +23,7 @@ public class ScheduleUtils {
 	
 	public static final int RESULT_NOT_EXISTED = -1;
 	
-	public static String queryString_SelectSchedule(Schedule schedule) {
+	public static String queryString_SelectUndeletedSchedule(Schedule schedule) {
 		return
 				ScheduleTable.USER_ID + "=" + MainActivity.sUserId 
 				+ " AND " +
@@ -33,6 +33,16 @@ public class ScheduleUtils {
 				+ "' AND " + 
 				ScheduleTable.DELETED + "=" + 0
 				;
+	}
+	
+	public static String queryString_SelectSchedule(Schedule schedule) {
+		return
+				ScheduleTable.USER_ID + "=" + MainActivity.sUserId 
+				+ " AND " +
+				ScheduleTable.DAY_NAME + "='" + schedule.getDayName()
+				+ "' AND " +
+				ScheduleTable.TIME + "='" + schedule.getTime() + "'"
+			;
 	}
 	
 	public static String queryString_Changed() {
@@ -69,7 +79,7 @@ public class ScheduleUtils {
 								.query(
 										TKDTProvider.SCHEDULE_CONTENT_URI, 
 										ScheduleTable.PROJECTION, 
-										queryString_SelectSchedule(schedule), 
+										queryString_SelectUndeletedSchedule(schedule), 
 										null, 
 										null
 								);
@@ -86,21 +96,41 @@ public class ScheduleUtils {
 			return REQUEST_TO_UPDATE;
 		} else {
 			
-			final long time = System.currentTimeMillis();
+			final String DateTimeString = TaleTimeUtils.getDateTimeStringByCalendar(Calendar.getInstance());
 			if (TextUtils.isEmpty(schedule.getDateSet()))
-				schedule.setDateSet(time);
+				schedule.setDateSet(DateTimeString);
 			if (TextUtils.isEmpty(schedule.getModified()))
-				schedule.setModified(time);
+				schedule.setModified(DateTimeString);
 			
 			ContentValues values = createContentValues(schedule);
 			Log.d("insert", "modified: " + values.getAsString(ScheduleTable.MODIFIED));
 			final Uri uri = context.getContentResolver().insert(TKDTProvider.SCHEDULE_CONTENT_URI, values);
 			if (uri == null) {
-				delete(context, schedule);
+				realDelete(context, schedule);
 				return RESULT_FAIL;
 			} else 
 				return RESULT_SUCCESS;
 		}
+	}
+	
+	public static void realDelete(Context context, Schedule schedule) {
+		
+		if (schedule == null) { 
+			context.getContentResolver()
+					.delete(
+							TKDTProvider.SCHEDULE_CONTENT_URI, 
+							null, 
+							null
+					);
+		} else {
+			context.getContentResolver()
+					.delete(
+							TKDTProvider.SCHEDULE_CONTENT_URI, 
+							queryString_SelectSchedule(schedule), 
+							null
+					);
+		}
+		
 	}
 	
 	public static void delete(Context context, Schedule schedule) {
@@ -123,7 +153,7 @@ public class ScheduleUtils {
 			.update(
 				TKDTProvider.SCHEDULE_CONTENT_URI, 
 				values, 
-				queryString_SelectSchedule(schedule), 
+				queryString_SelectUndeletedSchedule(schedule), 
 				null
 			);
 		}
@@ -144,7 +174,7 @@ public class ScheduleUtils {
 										.update(
 												TKDTProvider.SCHEDULE_CONTENT_URI, 
 												values, 
-												queryString_SelectSchedule(schedule), 
+												queryString_SelectUndeletedSchedule(schedule), 
 												null
 										);
 		if (updateResult < 0)
@@ -283,21 +313,25 @@ public class ScheduleUtils {
 	}
 	
 	public static Schedule getLocalSchedule(Context context, Schedule serverSchedule) {
+		
+		Schedule schedule = null;
+		
 		final Cursor cursor = context.getContentResolver()
 								.query(
 										TKDTProvider.SCHEDULE_CONTENT_URI, 
 										ScheduleTable.PROJECTION, 
-										queryString_SelectSchedule(serverSchedule), 
+										queryString_SelectUndeletedSchedule(serverSchedule), 
 										null, 
 										null
 								);
 		if (cursor.moveToFirst()) {
-			Schedule schedule = new Schedule();
+			schedule = new Schedule();
 			bindScheduleData(schedule, cursor);
-			return schedule;
 		}
+
+		closeCursor(cursor);
 		
-		return null;
+		return schedule;
 			
 	}
 	
@@ -319,7 +353,7 @@ public class ScheduleUtils {
 			Log.d("sync", "sync_app result: " + sync_app);
 			if (sync_app.equals("1")) { 
 				if (schedule.getDeleted() == 1){
-					delete(context, schedule);
+					realDelete(context, schedule);
 					Log.d("sync", "sync_app result: " + sync_app);
 				}else {
 					schedule.setChanged(0);
@@ -335,7 +369,7 @@ public class ScheduleUtils {
 			Log.d("syncSchedule", "server date modified: " + serverSchedule.getModified());
 			if (localSchedule.getModified().compareTo(serverSchedule.getModified()) < 0) {
 				if (serverSchedule.getDeleted() == 1) { 
-					delete(context, localSchedule);
+					realDelete(context, localSchedule);
 				} else {
 					serverSchedule.setChanged(0);
 					update(context, serverSchedule);

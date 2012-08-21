@@ -39,6 +39,7 @@ public class TodoAdapter extends CursorAdapter {
 	    @Override
 	    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
 	    	mAdapter.changeCursor(cursor);
+	    	mAdapter.notifyDataSetChanged();
 	    }
 	}
 	

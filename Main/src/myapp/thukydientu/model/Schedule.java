@@ -1,9 +1,5 @@
 package myapp.thukydientu.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
 public class Schedule {
 	private long Id;
 	private int UserId;
@@ -18,12 +14,12 @@ public class Schedule {
 	private int Deleted;
 	private int Lessons;
 	private int LessonDuration;
-	
+
 	public Schedule() {
 		Modified = "";
 		DateSet = "";
 	}
-	
+
 	public long getId() {
 		return Id;
 	}
@@ -31,7 +27,7 @@ public class Schedule {
 	public void setId(long id) {
 		Id = id;
 	}
-	
+
 	public int getDayName() {
 		return DayName;
 	}
@@ -75,25 +71,17 @@ public class Schedule {
 	public String getDateSet() {
 		return DateSet;
 	}
+
 	public void setDateSet(String dateSet) {
 		this.DateSet = dateSet;
 	}
-	public void setDateSet(long milisecond) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		this.DateSet = sdf.format(new Date(milisecond));
-	}
-	
+
 	public String getModified() {
 		return Modified;
 	}
 
 	public void setModified(String Modified) {
 		this.Modified = Modified;
-	}
-	
-	public void setModified(long milisecond) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		this.Modified = sdf.format(new Date(milisecond));
 	}
 
 	public int getChanged() {

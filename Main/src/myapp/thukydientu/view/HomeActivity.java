@@ -19,6 +19,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -39,6 +40,9 @@ import android.widget.Toast;
 
 public class HomeActivity extends Activity {
 
+	// #DEBUG
+	private boolean DEBUG = true;
+	
 	public static final int DIALOG_INFORM_INPUT = 1;
 	public static final int DIALOG_SHARE = 2;
 	public static final int DIALOG_OPTION_LOCATION = 3;
@@ -61,6 +65,9 @@ public class HomeActivity extends Activity {
 	private String dateEnd = "";
 	
 	private boolean isDateStartPick;
+	private boolean shareLocationEnable;
+	private Button stopShareLocation;
+	
 	protected final String tag = HomeActivity.class.getName();
 	
 	@Override
@@ -68,6 +75,9 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
+		mSharedPreferences = getSharedPreferences(IConstants.PREF_NAME, MODE_PRIVATE);
+		shareLocationEnable = mSharedPreferences.getBoolean(IConstants.ShareLocation.ENABLE, false);
+		
 		mDateStart = Calendar.getInstance();
 		mDateEnd = Calendar.getInstance();
 		
@@ -99,9 +109,26 @@ public class HomeActivity extends Activity {
 			}
 		});
 
+		stopShareLocation = (Button) findViewById(R.id.stop_update_location);
+		stopShareLocation.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				stopService(new Intent(HomeActivity.this, ShareLocationService.class));
+				stopShareLocation.setVisibility(View.GONE);
+			}
+		});
+		
+		if (shareLocationEnable) 
+			stopShareLocation.setVisibility(View.VISIBLE);
+		else 
+			stopShareLocation.setVisibility(View.GONE);
+		
 	}
 
-	int shareDayName;
+	private int shareDayName;
+	private SharedPreferences mSharedPreferences;
+	
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -195,6 +222,13 @@ public class HomeActivity extends Activity {
 					int minutes = 0; 
 					if (!TextUtils.isEmpty(minuteView.getText()))
 						minutes = Integer.parseInt(minuteView.getText().toString());
+					
+					Editor editor = mSharedPreferences.edit();
+					editor.putBoolean(IConstants.ShareLocation.ENABLE, true);
+					editor.commit();
+					
+					stopShareLocation.setVisibility(View.VISIBLE);
+					
 					new ShareLocationService(HomeActivity.this, minutes);
 				}
 			});
@@ -421,6 +455,10 @@ public class HomeActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		menu.add(0, 0, 0, "Đăng Xuất").setIcon(android.R.drawable.ic_menu_more);
+		if (DEBUG) {
+			menu.add(0, 1, 1, "Schedule").setIcon(android.R.drawable.ic_menu_info_details);
+			menu.add(0, 2, 2, "Todo").setIcon(android.R.drawable.ic_menu_info_details);
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -438,7 +476,14 @@ public class HomeActivity extends Activity {
 			startActivity(new Intent(getBaseContext(), LogonActivity.class));
 			finish();
 			break;
-		}
+		case 1:
+			startActivity(new Intent(this, ScheduleDebugListActivity.class));
+			break;
+		case 2:
+			startActivity(new Intent(this, TodoDebugListActivity.class));
+			break;
+		} 
+			
 		return true;
 
 	}

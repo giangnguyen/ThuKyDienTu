@@ -89,6 +89,11 @@ public class ScheduleListActivity extends ExpandableListActivity {
 
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mAdapter.notifyDataSetChanged();
+	}
 
 	@Override
 	protected void onDestroy() {

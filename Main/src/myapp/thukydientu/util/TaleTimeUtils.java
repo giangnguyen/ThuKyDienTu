@@ -9,8 +9,9 @@ import android.text.format.DateUtils;
 public class TaleTimeUtils {
 	
 	final static String FORMAT_DATE = "yyyyMMdd";
-	final static String FORMAT_TIME = "HHmmss";
-	final static String FORMAT_DATE_TIME = FORMAT_DATE + FORMAT_TIME;
+	final static String FORMAT_TIME = "HHmm";
+	final static String FORMAT_DATE_TIME = FORMAT_DATE + FORMAT_TIME + "ss";
+	final static String FORMAT_SHOW_DATE = "dd/MM/yyyy";
 	
 	// return int @Minute by @TimeString (FORMAT_TIME)
 	public static int getMinute(String timeString) throws IndexOutOfBoundsException {
@@ -29,7 +30,7 @@ public class TaleTimeUtils {
 	
 	// return int @Month by @DateString (FORMAT_DATE)
 	public static int getMonth(String dateString) throws IndexOutOfBoundsException {
-		return Integer.parseInt(dateString.substring(4, 6));
+		return Integer.parseInt(dateString.substring(4, 6)) - 1;
 	}
 	
 	// return int @Year by @DateString (FORMAT_DATE)
@@ -103,7 +104,7 @@ public class TaleTimeUtils {
 	// return @TimeString (FORMAT_TIME) by @Calendar object
 	public static String getTimeStringByCalendar(Calendar calendar) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_TIME);
-		final String timeString = sdf.format(calendar.getTime());
+		final String timeString = sdf.format(calendar.getTime()) + "00";
 		return timeString;
 	}
 	
@@ -128,7 +129,9 @@ public class TaleTimeUtils {
 	
 	// return display date format by @TimeMillis
 	public static String getDateLable(Context context, Calendar calendar) {
-		return DateUtils.formatDateTime(context, calendar.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR);
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_SHOW_DATE);
+		final String dateDisplay = sdf.format(calendar.getTime());
+		return dateDisplay;
 	}
 	
 	// return display Day Of Week name by @DayOfWeek

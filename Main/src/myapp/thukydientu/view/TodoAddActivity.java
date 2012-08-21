@@ -40,6 +40,7 @@ public class TodoAddActivity extends Activity {
 	Calendar mCalendarStart;
 	Calendar mCalendarEnd;
 	Todo mTodo;
+	Todo mOldTodo;
 	
 	Bundle mBundle;
 	
@@ -147,8 +148,7 @@ public class TodoAddActivity extends Activity {
 					mTodo.setAlarm(mAlarm.isChecked() ?  1: 0);
 					
 					if (!Flag_Add) {
-						mTodo.setId(mBundle.getLong(IConstants._ID));
-						TodoUtils.delete(TodoAddActivity.this, mTodo);
+						TodoUtils.delete(TodoAddActivity.this, mOldTodo);
 					}
 					mTodo.setChanged(1);
 					mTodo.setDeleted(0);
@@ -163,21 +163,24 @@ public class TodoAddActivity extends Activity {
 	private void fillExistData(Cursor cursor) {
 		if (!cursor.moveToFirst()) 
 			return;
-		mEvent.setText(cursor.getString(TodoTable.TITLE_COLUMN_INDEX));
-		mDescription.setText(cursor.getString(TodoTable.WORK_COLUMN_INDEX));
 		
-		final String startDateString = cursor.getString(TodoTable.DATE_START_COLUMN_INDEX);
+		mOldTodo = new Todo();
+		TodoUtils.bindTodoData(mOldTodo, cursor);
+		
+		mEvent.setText(mOldTodo.getTitle());
+		mDescription.setText(mOldTodo.getWork());
+		
+		final String startDateString = mOldTodo.getDateStart();
 		mCalendarStart = TaleTimeUtils.createCalendarByDateString(startDateString);
 		mDateView.setText(TaleTimeUtils.getDateLable(this, mCalendarStart));
 		mStartTimeView.setText(TaleTimeUtils.getTimeLable(this, mCalendarStart));
 		
-		final String endDateString = cursor.getString(TodoTable.DATE_END_COLUMN_INDEX);
+		final String endDateString = mOldTodo.getDateEnd();
 		mCalendarEnd = TaleTimeUtils.createCalendarByDateString(endDateString);
 		mEndTimeView.setText(TaleTimeUtils.getTimeLable(this, mCalendarEnd));
-		mAlarm.setChecked(cursor.getInt(TodoTable.ALAMR_COLUMN_INDEX) == 0 ? false : true);
+		mAlarm.setChecked(mOldTodo.getAlarm() == 0 ? false : true);
 		mAdd.setText(getString(R.string.save));
 	}
-	
 	
 	private boolean isInputFieldEmpty() {
 		if (TextUtils.isEmpty(mEvent.getText().toString()) 

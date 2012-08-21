@@ -96,9 +96,11 @@ public class MainActivity extends TabActivity {
 				switch (dataType) {
 				case IConstants.DataType.SCHEDULE:
 					scheduleSync.setVisibility(View.INVISIBLE);
+					scheduleSync.clearAnimation();
 					break;
 				case IConstants.DataType.TODO:
 					todoSync.setVisibility(View.INVISIBLE);
+					todoSync.clearAnimation();
 					break;
 				}
 				AndroidUtil.log("OnReceive", "Sync Finished!");
@@ -213,7 +215,7 @@ public class MainActivity extends TabActivity {
 				.setContent(intent);
 		tabHost.addTab(spec);
 
-		tabHost.setCurrentTabByTag(TAB_SCHEDULE_ID);
+		tabHost.setCurrentTabByTag(TAB_HOME_ID);
 
 		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
